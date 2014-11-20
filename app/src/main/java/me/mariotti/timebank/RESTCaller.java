@@ -8,17 +8,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by Simone on 09/11/2014.
- */
+
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
-    private String mServerUrl = "http://10.0.3.2:8000/";
+    private String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
     final String TAG = "RESTCaller";
     private ArrayAdapter<String> mAdapter;
     private MainActivity mMainActivity;
@@ -40,35 +41,41 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         try {
             if (!s.getBoolean("hasErrors")) {
                 mAdapter.clear();
-                mAdapter.add(s.getString("responseBody"));
+                //mAdapter.add(s.getString("responseBody"));
+                JSONArray body= s.getJSONArray("responseBody");
+                // TODO trasformare i listings in un ArrayList di HashMap, usare un list item personalizzato
+                for (int i = 0; i<body.length(); i++) {
+                    JSONObject item = body.getJSONObject(i);
+                    mAdapter.add("Description: "+item.getString("description")+"\t-\t"+"Category: "+
+                                 item.getString("category")+"\t-\t"+"Date: "+item.getString("creation_date")+"\t-\t"+
+                                 "Apllicant: "+item.getString("applicant")+"\t-\t"+"Requested: "+
+                                 item.getString("requested"));
+                }
             } else {
                 Toast.makeText(mMainActivity.getBaseContext(), s.getString("errorMessage"), Toast.LENGTH_LONG).show();
-                mAdapter.clear();
-                //mAdapter.addAll("ciao","prova");
                 mAdapter.add("An error has occurred while downloading the listings list. Retry");
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("RESTCaller", e.getMessage());
         }
         mAdapter.notifyDataSetChanged();
-
     }
 
     @Override
     protected JSONObject doInBackground(String... params) {
-        JSONObject response = new JSONObject();
+        JSONObject mJSONObject = new JSONObject();
 
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(mServerUrl + "listisngs/");
+            URL url = new URL(mServerUrl + "listings/");
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
-            response = responseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+            mJSONObject = responseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
         } catch (MalformedURLException e) {
             e.printStackTrace();
             try {
-                response.put("hasErrors", true);
-                response.put("errorMessage", e.toString());
+                mJSONObject.put("hasErrors", true);
+                mJSONObject.put("errorMessage", e.toString());
 
             } catch (JSONException e1) {
                 e1.printStackTrace();
@@ -76,8 +83,8 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         } catch (IOException e) {
             e.printStackTrace();
             try {
-                response.put("hasErrors", true);
-                response.put("errorMessage", e.toString());
+                mJSONObject.put("hasErrors", true);
+                mJSONObject.put("errorMessage", e.toString());
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
@@ -86,7 +93,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
                 urlConnection.disconnect();
             }
         }
-        return response;
+        return mJSONObject;
     }
 
     public JSONObject responseToJson(InputStreamReader mInputStreamReader, int responseCode, String responseMessage) {

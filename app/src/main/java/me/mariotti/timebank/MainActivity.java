@@ -6,9 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class MainActivity extends Activity {
@@ -24,15 +24,15 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mListView = (ListView) findViewById(R.id.listView);
         mList = new ArrayList<String>();
+        /*
         values = new String[]{"Android", "iPhone", "WindowsMobile",
                               "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
                               "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
                               "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
                               "Android", "iPhone", "WindowsMobile"};
+        */
         values = new String[]{"No listings available"};
-        for (int i = 0; i < values.length; ++i) {
-            mList.add(values[i]);
-        }
+        Collections.addAll(mList, values);
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mList);
         mListView.setAdapter(mAdapter);
         refreshListings();
@@ -72,4 +72,7 @@ public class MainActivity extends Activity {
         new RESTCaller(this).execute();
     }
 
+    public void refresh(MenuItem item) {
+        refreshListings();
+    }
 }
