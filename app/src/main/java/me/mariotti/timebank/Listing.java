@@ -18,13 +18,15 @@ public class Listing {
     public int applicant;
     public boolean requested;
     // TODO add owner class and an owner field
-    DateFormat mDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    DateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
+    DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
 
     public Listing(JSONObject json) {
         try {
+            id = json.getInt("id");
             description = json.getString("description");
             categoryId = json.getInt("category");
-            dateCreation = mDateFormat.parse(json.getString("creation_date"));
+            dateCreation = dateParser.parse(json.getString("creation_date"));
             applicant = json.getInt("applicant");
             requested = json.getBoolean("requested");
         } catch (JSONException e) {
@@ -33,5 +35,12 @@ public class Listing {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "Description: " + description + "\t-\t" + "Category id: " + categoryId + "\t-\t" + "Category name: " +
+               categoryName + "\t-\t" + "Date: " + dateFormatter.format(dateCreation) + "\t-\t" + "Apllicant: " +
+               applicant + "\t-\t" + "Requested: " + requested;
     }
 }
