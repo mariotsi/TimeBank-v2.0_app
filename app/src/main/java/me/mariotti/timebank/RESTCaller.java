@@ -37,7 +37,6 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject s) {
         super.onPostExecute(s);
-
         try {
             if (!s.getBoolean("hasErrors")) {
                 mAdapter.clear();

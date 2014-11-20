@@ -1,18 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context=".MainActivity">
-
+      tools:context="me.mariotti.timebank.ListingActivity">
+    <item android:id="@+id/edit_menu_item"
+          android:title="@string/edit"
+          android:orderInCategory="100"
+          android:showAsAction="never"/>
+    <item android:id="@+id/delete_menu_item"
+          android:title="@string/delete"
+          android:orderInCategory="100"
+          android:showAsAction="never"/>
     <item android:id="@+id/refresh"
           android:title="@string/action_refresh"
           android:orderInCategory="100"
           android:icon="@android:drawable/ic_popup_sync"
-          android:onClick="refresh"
+          android:onClick="editListing"
           android:showAsAction="ifRoom"/>
     <item android:id="@+id/search"
           android:title="@string/action_search"
           android:orderInCategory="99"
           android:icon="@android:drawable/ic_search_category_default"
+          android:onClick="deleteListing"
           android:showAsAction="ifRoom"/>
-
-
 </menu>

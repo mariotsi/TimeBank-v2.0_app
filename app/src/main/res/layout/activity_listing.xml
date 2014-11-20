@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="me.mariotti.timebank.ListingActivity">
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/descriptionText" android:layout_gravity="center_horizontal"
+            style="@style/AppTheme" android:editable="false" android:elevation="3dp"
+            android:elegantTextHeight="false" android:gravity="center_horizontal|top"
+            android:inputType="textAutoCorrect" android:theme="@style/AppTheme" android:maxHeight="100dp"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="categoryLabel"
+                  android:id="@+id/categoryLabel"/>
+        <Space android:layout_width="20dp" android:layout_height="20dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="categoryText"
+                  android:id="@+id/categoryText"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dateLabel"
+                android:id="@+id/dateLabel"/>
+        <Space
+                android:layout_width="20px"
+                android:layout_height="20px"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dateText"
+                android:id="@+id/dateText" android:gravity="right"/>
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text="@string/requested" android:id="@+id/textView"/>
+        <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:id="@+id/checkBox"/>
+    </LinearLayout>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/claimButton" android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>
