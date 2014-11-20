@@ -15,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
@@ -26,7 +28,8 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
     @Override
     protected void onPreExecute() {
-        super.onPreExecute();
+        mAdapter.clear();
+        super.onPreExecute(); mMainActivity.progress.show();
     }
 
     public RESTCaller(MainActivity mMainActivity) {
@@ -39,23 +42,22 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         super.onPostExecute(s);
         try {
             if (!s.getBoolean("hasErrors")) {
-                mAdapter.clear();
-                //mAdapter.add(s.getString("responseBody"));
                 JSONArray body= s.getJSONArray("responseBody");
+                ArrayList<Listing> listingsArray = new ArrayList<Listing>();
                 // TODO trasformare i listings in un ArrayList di HashMap, usare un list item personalizzato
                 for (int i = 0; i<body.length(); i++) {
-                    JSONObject item = body.getJSONObject(i);
-                    mAdapter.add("Description: "+item.getString("description")+"\t-\t"+"Category: "+
-                                 item.getString("category")+"\t-\t"+"Date: "+item.getString("creation_date")+"\t-\t"+
-                                 "Apllicant: "+item.getString("applicant")+"\t-\t"+"Requested: "+
-                                 item.getString("requested"));
+                    listingsArray.add(new Listing(body.getJSONObject(i)));
+                    mAdapter.add(listingsArray.get(i).toString());
                 }
+
             } else {
                 Toast.makeText(mMainActivity.getBaseContext(), s.getString("errorMessage"), Toast.LENGTH_LONG).show();
                 mAdapter.add("An error has occurred while downloading the listings list. Retry");
             }
         } catch (JSONException e) {
             Log.e("RESTCaller", e.getMessage());
+        } finally {
+            mMainActivity.progress.hide();
         }
         mAdapter.notifyDataSetChanged();
     }

@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Listing {
+public class Listing{
     public int id;
     public String description;
     public int categoryId;
@@ -40,7 +40,7 @@ public class Listing {
     @Override
     public String toString() {
         return "Description: " + description + "\t-\t" + "Category id: " + categoryId + "\t-\t" + "Category name: " +
-               categoryName + "\t-\t" + "Date: " + dateFormatter.format(dateCreation) + "\t-\t" + "Apllicant: " +
+               categoryName + "\t-\t" + "Pubblishing Date: " + dateFormatter.format(dateCreation) + "\t-\t" + "Apllicant: " +
                applicant + "\t-\t" + "Requested: " + requested;
     }
 }

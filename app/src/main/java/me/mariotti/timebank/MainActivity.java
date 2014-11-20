@@ -1,6 +1,7 @@
 package me.mariotti.timebank;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,13 +19,17 @@ public class MainActivity extends Activity {
     private ListView mListView;
     private ArrayList<String> mList;
     public ArrayAdapter<String> mAdapter;
-
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mListView = (ListView) findViewById(R.id.listView);
+        progress = new ProgressDialog(this);
+        progress.setMessage("Loading listings");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
         mList = new ArrayList<String>();
         /*
         values = new String[]{"Android", "iPhone", "WindowsMobile",
