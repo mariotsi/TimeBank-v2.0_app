@@ -17,8 +17,8 @@ import java.util.Collections;
 public class MainActivity extends Activity {
     private String[] values;
     private ListView mListView;
-    private ArrayList<String> mList;
-    public ArrayAdapter<String> mAdapter;
+    private ArrayList<Listing> mList;
+    public ListingAdapter mAdapter;
     ProgressDialog progress;
 
     @Override
@@ -30,7 +30,8 @@ public class MainActivity extends Activity {
         progress.setMessage("Loading listings");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
-        mList = new ArrayList<String>();
+        //mList = new ArrayList<String>();
+        mList = new ArrayList<Listing>();
         /*
         values = new String[]{"Android", "iPhone", "WindowsMobile",
                               "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
@@ -39,8 +40,8 @@ public class MainActivity extends Activity {
                               "Android", "iPhone", "WindowsMobile"};
         */
         values = new String[]{"No listings available"};
-        Collections.addAll(mList, values);
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mList);
+        //Collections.addAll(mList, values);
+        mAdapter = new ListingAdapter(this, 0,mList);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

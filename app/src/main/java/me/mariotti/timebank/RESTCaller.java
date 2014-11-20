@@ -23,7 +23,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
     private String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
     final String TAG = "RESTCaller";
-    private ArrayAdapter<String> mAdapter;
+    private ListingAdapter mAdapter;
     private MainActivity mMainActivity;
 
     @Override
@@ -47,7 +47,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
                 // TODO trasformare i listings in un ArrayList di HashMap, usare un list item personalizzato
                 for (int i = 0; i<body.length(); i++) {
                     listingsArray.add(new Listing(body.getJSONObject(i)));
-                    mAdapter.add(listingsArray.get(i).toString());
+                    mAdapter.add(listingsArray.get(i));
                 }
 
             } else {

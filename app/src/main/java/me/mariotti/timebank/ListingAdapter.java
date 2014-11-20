@@ -4,23 +4,27 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class ListingAdapter extends BaseAdapter {
+public class ListingAdapter extends ArrayAdapter {
     ArrayList<Listing> data;
     Context context;
 
-    public ListingAdapter(Context context, ArrayList<Listing> data) {
-        this.data = data;
-        this.context = context;
+    public ListingAdapter(Context context, int resource, List objects) {
+        super(context, resource, objects);
+        this.context=context;
+        data=(ArrayList<Listing>)objects;
     }
 
-    @Override
+
+
+
+
+
     public int getCount() {
         return data.size();
     }
@@ -50,4 +54,5 @@ public class ListingAdapter extends BaseAdapter {
 
         return convertView;
     }
+
 }
