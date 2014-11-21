@@ -1,4 +1,4 @@
-package me.mariotti.timebank;
+package me.mariotti.timebank.classes;
 
 
 import org.json.JSONException;

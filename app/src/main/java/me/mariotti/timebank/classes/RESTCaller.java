@@ -1,9 +1,9 @@
-package me.mariotti.timebank;
+package me.mariotti.timebank.classes;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import me.mariotti.timebank.MainActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,24 +16,23 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
     private String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
     final String TAG = "RESTCaller";
-    private ListingAdapter mAdapter;
+    private ListingAdapter mListingAdapter;
     private MainActivity mMainActivity;
 
     @Override
     protected void onPreExecute() {
-        mAdapter.clear();
+        mListingAdapter.clear();
         super.onPreExecute(); mMainActivity.progress.show();
     }
 
     public RESTCaller(MainActivity mMainActivity) {
-        mAdapter = mMainActivity.mAdapter;
+        mListingAdapter = mMainActivity.mListingAdapter;
         this.mMainActivity = mMainActivity;
     }
 
@@ -44,22 +43,21 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             if (!s.getBoolean("hasErrors")) {
                 JSONArray body= s.getJSONArray("responseBody");
                 ArrayList<Listing> listingsArray = new ArrayList<Listing>();
-                // TODO trasformare i listings in un ArrayList di HashMap, usare un list item personalizzato
                 for (int i = 0; i<body.length(); i++) {
                     listingsArray.add(new Listing(body.getJSONObject(i)));
-                    mAdapter.add(listingsArray.get(i));
+                    mListingAdapter.add(listingsArray.get(i));
                 }
 
             } else {
                 Toast.makeText(mMainActivity.getBaseContext(), s.getString("errorMessage"), Toast.LENGTH_LONG).show();
-                mAdapter.add("An error has occurred while downloading the listings list. Retry");
+//                mListingAdapter.add("An error has occurred while downloading the listings list. Retry");
             }
         } catch (JSONException e) {
             Log.e("RESTCaller", e.getMessage());
         } finally {
             mMainActivity.progress.hide();
         }
-        mAdapter.notifyDataSetChanged();
+        mListingAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -68,7 +66,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(mServerUrl + "listings/");
+            URL url = new URL(mServerUrl + "listings/"); //TODO shuold be listings/search to omit requested listings
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
             mJSONObject = responseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());

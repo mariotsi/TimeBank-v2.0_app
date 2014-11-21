@@ -1,36 +1,32 @@
-package me.mariotti.timebank;
+package me.mariotti.timebank.classes;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import me.mariotti.timebank.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ListingAdapter extends ArrayAdapter {
+public class ListingAdapter extends ArrayAdapter<Listing> {
     ArrayList<Listing> data;
     Context context;
 
-    public ListingAdapter(Context context, int resource, List objects) {
+    public ListingAdapter(Context context, int resource, ArrayList<Listing> objects) {
         super(context, resource, objects);
-        this.context=context;
-        data=(ArrayList<Listing>)objects;
+        this.context = context;
+        data = objects;
     }
-
-
-
-
-
 
     public int getCount() {
         return data.size();
     }
 
     @Override
-    public Object getItem(int position) {
+    public Listing getItem(int position) {
         return data.get(position);
     }
 
@@ -44,9 +40,9 @@ public class ListingAdapter extends ArrayAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.row_item_main, null);
         }
-        Listing mListing = (Listing) getItem(position);
-        TextView description= (TextView) convertView.findViewById(R.id.row_descriptionText);
-        TextView category= (TextView) convertView.findViewById(R.id.row_categoryText);
+        Listing mListing = getItem(position);
+        TextView description = (TextView) convertView.findViewById(R.id.row_descriptionText);
+        TextView category = (TextView) convertView.findViewById(R.id.row_categoryText);
         TextView date = (TextView) convertView.findViewById(R.id.row_dateText);
         description.setText(mListing.description);
         category.setText(mListing.categoryName);
@@ -54,5 +50,4 @@ public class ListingAdapter extends ArrayAdapter {
 
         return convertView;
     }
-
 }

@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="me.mariotti.timebank.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/activity_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="me.mariotti.timebank.ListingActivity"
+            android:name=".SingleListingActivity"
             android:label="@string/title_activity_listing" >
         </activity>
     </application>

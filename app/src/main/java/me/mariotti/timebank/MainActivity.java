@@ -7,24 +7,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+import me.mariotti.timebank.classes.Listing;
+import me.mariotti.timebank.classes.ListingAdapter;
+import me.mariotti.timebank.classes.RESTCaller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class MainActivity extends Activity {
     private String[] values;
     private ListView mListView;
     private ArrayList<Listing> mList;
-    public ListingAdapter mAdapter;
-    ProgressDialog progress;
+    public ListingAdapter mListingAdapter;
+    public ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity);
         mListView = (ListView) findViewById(R.id.listView);
         progress = new ProgressDialog(this);
         progress.setMessage("Loading listings");
@@ -41,15 +43,15 @@ public class MainActivity extends Activity {
         */
         values = new String[]{"No listings available"};
         //Collections.addAll(mList, values);
-        mAdapter = new ListingAdapter(this, 0,mList);
-        mListView.setAdapter(mAdapter);
+        mListingAdapter = new ListingAdapter(this, 0, mList);
+        mListView.setAdapter(mListingAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            }
+                Toast.makeText(getBaseContext(), String.valueOf(id), Toast.LENGTH_LONG).show();
+            }
         });
         refreshListings();
 

@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="me.mariotti.timebank.ListingActivity">
+      tools:context="me.mariotti.timebank.SingleListingActivity">
     <item android:id="@+id/edit_menu_item"
           android:title="@string/edit"
           android:orderInCategory="100"
