@@ -28,7 +28,8 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     @Override
     protected void onPreExecute() {
         mListingAdapter.clear();
-        super.onPreExecute(); mMainActivity.progress.show();
+        super.onPreExecute();
+        mMainActivity.progress.show();
     }
 
     public RESTCaller(MainActivity mMainActivity) {
@@ -41,9 +42,9 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         super.onPostExecute(s);
         try {
             if (!s.getBoolean("hasErrors")) {
-                JSONArray body= s.getJSONArray("responseBody");
+                JSONArray body = s.getJSONArray("responseBody");
                 ArrayList<Listing> listingsArray = new ArrayList<Listing>();
-                for (int i = 0; i<body.length(); i++) {
+                for (int i = 0; i < body.length(); i++) {
                     listingsArray.add(new Listing(body.getJSONObject(i)));
                     mListingAdapter.add(listingsArray.get(i));
                 }
@@ -63,23 +64,13 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     @Override
     protected JSONObject doInBackground(String... params) {
         JSONObject mJSONObject = new JSONObject();
-
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL(mServerUrl + "listings/"); //TODO shuold be listings/search to omit requested listings
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
             mJSONObject = responseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            try {
-                mJSONObject.put("hasErrors", true);
-                mJSONObject.put("errorMessage", e.toString());
-
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             try {
                 mJSONObject.put("hasErrors", true);

@@ -13,13 +13,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/descriptionText" android:layout_gravity="center_horizontal"
+            android:id="@+id/descriptionText"
             style="@style/AppTheme" android:editable="false" android:elevation="3dp"
             android:elegantTextHeight="false" android:gravity="center_horizontal|top"
-            android:inputType="textAutoCorrect" android:theme="@style/AppTheme" android:maxHeight="100dp"/>
+            android:theme="@style/AppTheme" android:maxHeight="100dp"/>
     <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="categoryLabel"
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text="@string/category_label"
                   android:id="@+id/categoryLabel"/>
         <Space android:layout_width="20dp" android:layout_height="20dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="categoryText"
@@ -32,7 +33,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dateLabel"
+                android:text="@string/date_label"
                 android:id="@+id/dateLabel"/>
         <Space
                 android:layout_width="20px"
@@ -48,8 +49,12 @@
                   android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:text="@string/requested" android:id="@+id/textView"/>
+        <Space
+                android:layout_width="20px"
+                android:layout_height="20px"
+                />
         <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:id="@+id/checkBox"/>
+                  android:id="@+id/checkBox_requested" android:clickable="false"/>
     </LinearLayout>
     <Button
             android:layout_width="wrap_content"

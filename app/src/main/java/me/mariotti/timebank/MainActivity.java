@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(parent.getContext(),SingleListingActivity.class);
-                intent.putExtra(LISTING_OBJECT,"prova123");
+                intent.putExtra(LISTING_OBJECT, mListingAdapter.getItem(position));
                 startActivity(intent);
                 Toast.makeText(getBaseContext(), String.valueOf(mListingAdapter.getItem(position).owner), Toast.LENGTH_SHORT).show();
             }
