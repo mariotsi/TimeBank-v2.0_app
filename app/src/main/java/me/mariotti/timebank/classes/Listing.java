@@ -15,6 +15,7 @@ public class Listing{
     public int categoryId;
     public String categoryName;
     public Date dateCreation;
+    public int owner;
     public int applicant;
     public boolean requested;
     // TODO add owner class and an owner field
@@ -27,6 +28,7 @@ public class Listing{
             description = json.getString("description");
             categoryId = json.getInt("category");
             dateCreation = dateParser.parse(json.getString("creation_date"));
+            owner=json.getInt("owner");
             applicant = json.getInt("applicant");
             requested = json.getBoolean("requested");
         } catch (JSONException e) {

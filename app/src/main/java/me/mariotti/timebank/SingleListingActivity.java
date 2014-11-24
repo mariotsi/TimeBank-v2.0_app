@@ -1,9 +1,11 @@
 package me.mariotti.timebank;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
 public class SingleListingActivity extends Activity {
@@ -12,6 +14,9 @@ public class SingleListingActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.single_listing_activity);
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(MainActivity.LISTING_OBJECT);
+        ((TextView)findViewById(R.id.descriptionText)).setText(message);
     }
 
 

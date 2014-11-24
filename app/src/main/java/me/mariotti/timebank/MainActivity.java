@@ -2,6 +2,7 @@ package me.mariotti.timebank;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends Activity {
+    public static final String LISTING_OBJECT = "me.mariotti.timebank.listing_object";
     private String[] values;
     private ListView mListView;
     private ArrayList<Listing> mList;
@@ -46,11 +48,12 @@ public class MainActivity extends Activity {
         mListingAdapter = new ListingAdapter(this, 0, mList);
         mListView.setAdapter(mListingAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getBaseContext(), String.valueOf(id), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(parent.getContext(),SingleListingActivity.class);
+                intent.putExtra(LISTING_OBJECT,"prova123");
+                startActivity(intent);
+                Toast.makeText(getBaseContext(), String.valueOf(mListingAdapter.getItem(position).owner), Toast.LENGTH_SHORT).show();
             }
         });
         refreshListings();
