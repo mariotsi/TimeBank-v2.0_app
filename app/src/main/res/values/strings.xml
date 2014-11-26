@@ -13,5 +13,9 @@
     <string name="delete">Delete</string>
     <string name="date_label">Published on:</string>
     <string name="category_label">Category:</string>
+    <string name="request_text">Request</string>
+    <string name="unrequest_text">Unrequest</string>
+    <string name="log_in">Login</string>
+    <string name="log_out">Logout</string>
 
 </resources>

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
+import me.mariotti.timebank.classes.User;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public class MainActivity extends Activity {
     private ArrayList<Listing> mList;
     public ListingAdapter mListingAdapter;
     public ProgressDialog progress;
+    public User loggedUser=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,6 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(parent.getContext(),SingleListingActivity.class);
                 intent.putExtra(LISTING_OBJECT, mListingAdapter.getItem(position));
                 startActivity(intent);
-                Toast.makeText(getBaseContext(), String.valueOf(mListingAdapter.getItem(position).owner), Toast.LENGTH_SHORT).show();
             }
         });
         refreshListings();

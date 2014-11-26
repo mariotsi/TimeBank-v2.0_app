@@ -1,23 +1,22 @@
 package me.mariotti.timebank;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.*;
 import me.mariotti.timebank.classes.Listing;
 
 
 public class SingleListingActivity extends Activity {
+    Button mClaimButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.single_listing_activity);
-        //Intent intent = getIntent();
-        //String message = intent.getStringExtra(MainActivity.LISTING_OBJECT);
-        //((TextView)findViewById(R.id.descriptionText)).setText(message);
         // TODO hide or show fields based on ownership
         Bundle data= getIntent().getExtras();
         Listing mListing = data.getParcelable(MainActivity.LISTING_OBJECT);
@@ -25,13 +24,53 @@ public class SingleListingActivity extends Activity {
         ((TextView)findViewById(R.id.categoryText)).setText(mListing.categoryName+mListing.categoryId);
         ((TextView)findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
         ((CheckBox)findViewById(R.id.checkBox_requested)).setChecked(!mListing.requested);
+        mClaimButton = (Button)findViewById(R.id.claimButton);
+
+        mClaimButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick( View view) {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                if (true){//TODO replace with isLogged
+                    //do request - unrequest
+                }
+                else{
+                    intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
+                }
+                startActivity(intent);
+            }
+        });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (true){//TODO replace with isREquested and i can see that
+            mClaimButton.setText(R.string.request_text);
+
+        }
+        else{
+            mClaimButton.setText(R.string.unrequest_text);
+
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.single_listing_menu, menu);
+        MenuItem LogInOut = menu.findItem(R.id.listing_detail_log_in_out);
+        Intent intent =(new Intent(this,LoginActivity.class));
+        if (true){//TODO replace with isLogged
+            LogInOut.setTitle(R.string.log_out);
+            intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
+        }
+        else{
+            LogInOut.setTitle(R.string.log_in);
+            intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
+        }
+        LogInOut.setIntent(intent);
+
         return true;
     }
 

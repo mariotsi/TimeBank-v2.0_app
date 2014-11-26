@@ -36,18 +36,18 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.row_item_main, null);
+    public View getView(int position, View mView, ViewGroup parent) {
+        if (mView == null) {
+            mView = LayoutInflater.from(context).inflate(R.layout.row_item_main, null);
         }
         Listing mListing = getItem(position);
-        TextView description = (TextView) convertView.findViewById(R.id.row_descriptionText);
-        TextView category = (TextView) convertView.findViewById(R.id.row_categoryText);
-        TextView date = (TextView) convertView.findViewById(R.id.row_dateText);
+        TextView description = (TextView) mView.findViewById(R.id.row_descriptionText);
+        TextView category = (TextView) mView.findViewById(R.id.row_categoryText);
+        TextView date = (TextView) mView.findViewById(R.id.row_dateText);
         description.setText(mListing.description);
         category.setText(mListing.categoryName);
-        date.setText(mListing.dateFormatter.format(mListing.dateCreation));
+        date.setText(Listing.dateFormatter.format(mListing.dateCreation));
 
-        return convertView;
+        return mView;
     }
 }

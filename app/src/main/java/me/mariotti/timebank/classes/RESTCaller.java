@@ -8,12 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -69,7 +65,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             URL url = new URL(mServerUrl + "listings/"); //TODO shuold be listings/search to omit requested listings
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
-            mJSONObject = responseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+            mJSONObject = JSONUtils.urlResponseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
         } catch (Exception e) {
             e.printStackTrace();
             try {
@@ -86,33 +82,6 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         return mJSONObject;
     }
 
-    public JSONObject responseToJson(InputStreamReader mInputStreamReader, int responseCode, String responseMessage) {
-        String line;
-        StringBuilder mStringBuilder = new StringBuilder("");
-        String serverResponseMessage = "";
-        try {
-            BufferedReader br = new BufferedReader(mInputStreamReader);
-            while ((line = br.readLine()) != null)
-                mStringBuilder.append(line);
-            mInputStreamReader.close();
-            serverResponseMessage = mStringBuilder.toString();
-            Log.i(TAG, serverResponseMessage);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        JSONObject response = new JSONObject();
-        try {
-            response.put("hasErrors", false);
-            response.put("responseCode", responseCode);
-            response.put("responseMessage", responseMessage);
-            response.put("responseBody", new JSONArray(serverResponseMessage));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
 }
 
 
