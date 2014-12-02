@@ -17,5 +17,7 @@
     <string name="unrequest_text">Unrequest</string>
     <string name="log_in">Login</string>
     <string name="log_out">Logout</string>
+    <string name="error_incorrect_username_or_password">Incorrect username or password</string>
+    <string name="error_generic_error">Error, retry</string>
 
 </resources>

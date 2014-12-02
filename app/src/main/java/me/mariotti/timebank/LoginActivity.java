@@ -22,10 +22,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
-import me.mariotti.timebank.classes.JSONUtils;
+import me.mariotti.timebank.classes.JsonUtils;
+import me.mariotti.timebank.classes.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -58,12 +62,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private int action;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         //TODO if ACTION==LOGOUT do a logout
+        action=getIntent().getExtras().getInt(ACTION);
         Toast.makeText(getBaseContext(), String.valueOf(getIntent().getExtras().getInt(ACTION)), Toast.LENGTH_SHORT).show();
 
         // Set up the login form.
@@ -148,13 +154,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute(action);
         }
     }
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.length()>4;
+        return email.length() > 4;
     }
 
     private boolean isPasswordValid(String password) {
@@ -256,7 +262,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, JSONObject> {
+    public class UserLoginTask extends AsyncTask<Integer, Void, JSONObject> {
 
         private static final String TAG = "Login";
         private final String mEmail;
@@ -268,24 +274,32 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
 
         @Override
-        protected JSONObject doInBackground(Void... voids) {
+        protected JSONObject doInBackground(Integer... action) {
             JSONObject mJSONObject = new JSONObject();
             HttpURLConnection urlConnection = null;
             try {
-                String userCredentials = mEmail+":"+mPassword;
-                String basicAuth = "Basic " + Base64.encodeToString(userCredentials.getBytes(),Base64.DEFAULT);
+                String userCredentials = mEmail + ":" + mPassword;
+                String basicAuth = "Basic " + Base64.encodeToString(userCredentials.getBytes(), Base64.DEFAULT);
 
-                URL url = new URL("https://agile-headland-8492.herokuapp.com/" + "listings/mine"); //TODO add login/logout url
+                URL url = new URL("https://agile-headland-8492.herokuapp.com/" + "users/login/"); //TODO add login/logout url
                 urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestProperty ("Authorization", basicAuth);
+                urlConnection.setRequestProperty("Content-Length", "0");
+                urlConnection.setRequestProperty("Content-Language", "en-US");
+                urlConnection.setRequestProperty("Authorization", basicAuth);
+
+                urlConnection.setDoOutput(true);
+
+
+
                 InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
-                mJSONObject = JSONUtils.urlResponseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+                mJSONObject = JsonUtils.urlResponseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
                     mJSONObject.put("hasErrors", true);
                     mJSONObject.put("errorMessage", e.toString());
-                } catch (JSONException e1) {
+                    mJSONObject.put("responseCode", urlConnection != null ? urlConnection.getResponseCode() : -1);
+                } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             } finally {
@@ -302,12 +316,32 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             showProgress(false);
             try {
                 // 200 OK login, 410 OK (GONE) logout
-                if (success.getInt("responseCode")==200 || success.getInt("responseCode")==410) {
-                    finish();
-                } else {
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mPasswordView.requestFocus();
+                switch (success.getInt("responseCode")) {                    
+                    case 200:
+                        User.logged = true;
+                        JSONObject successBody = success.getJSONObject("responseBody");
+                        MainActivity.loggedUser = new User(successBody.getString("email"),
+                                                           successBody.getString("username"), successBody.getBoolean("is_active"),
+                                                           successBody.getBoolean("is_admin"), successBody.getInt("available_hours"),
+                                                           successBody.getInt("worked_hours"), successBody.getInt("requested_hours"),
+                                                           successBody.getInt("used_hours"), successBody.getString("address"),
+                                                           successBody.getInt("city"), successBody.getString("city_name"));
+                        finish();
+                        break;
+                    case 410:
+                        if (MainActivity.loggedUser != null) {
+                            MainActivity.loggedUser = null;
+                        }
+                        User.logged = false;
+                        break;
+                    case 401:
+                        mEmailView.setError(getString(R.string.error_incorrect_username_or_password));
+                        mEmailView.requestFocus();
+                        break;
+                    default:
+                        Toast.makeText(getBaseContext(), getString(R.string.error_generic_error), Toast.LENGTH_LONG).show();
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

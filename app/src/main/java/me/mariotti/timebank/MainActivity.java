@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     private ArrayList<Listing> mList;
     public ListingAdapter mListingAdapter;
     public ProgressDialog progress;
-    public User loggedUser=null;
+    public static User loggedUser=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

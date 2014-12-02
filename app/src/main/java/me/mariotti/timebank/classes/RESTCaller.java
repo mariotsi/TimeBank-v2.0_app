@@ -65,7 +65,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             URL url = new URL(mServerUrl + "listings/"); //TODO shuold be listings/search to omit requested listings
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
-            mJSONObject = JSONUtils.urlResponseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+            mJSONObject = JsonUtils.urlResponseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
         } catch (Exception e) {
             e.printStackTrace();
             try {

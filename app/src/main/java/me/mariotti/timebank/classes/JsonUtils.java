@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * Created by Simone on 27/11/2014.
  */
-public class JSONUtils {
+public class JsonUtils {
 
     private static final String TAG = "JSON Utils";
 
@@ -38,7 +38,11 @@ public class JSONUtils {
             response.put("hasErrors", false);
             response.put("responseCode", responseCode);
             response.put("responseMessage", responseMessage);
-            response.put("responseBody", new JSONArray(serverResponseMessage));
+            if (serverResponseMessage.startsWith("[") && serverResponseMessage.endsWith("]")) {
+                response.put("responseBody", new JSONArray(serverResponseMessage));
+            } else {
+                response.put("responseBody", new JSONObject(serverResponseMessage));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
