@@ -13,9 +13,10 @@ public class User {
     public String address;
     public int city;
     public String city_name;
-    public static boolean logged = false;
+    public String userCredentials;
+    public static boolean isLogged = false;
 
-    public User( String email, String username, boolean is_active, boolean is_admin, int available_hours, int worked_hours, int requested_hours, int used_hours, String address, int city, String city_name) {
+    public User(String email, String username, boolean is_active, boolean is_admin, int available_hours, int worked_hours, int requested_hours, int used_hours, String address, int city, String city_name, String userCredentials) {
         this.email = email;
         this.username = username;
         this.is_active = is_active;
@@ -27,5 +28,6 @@ public class User {
         this.address = address;
         this.city = city;
         this.city_name=city_name;
+        this.userCredentials=userCredentials;
     }
 }

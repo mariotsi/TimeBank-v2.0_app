@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import me.mariotti.timebank.classes.Listing;
+import me.mariotti.timebank.classes.User;
 
 
 public class SingleListingActivity extends Activity {
@@ -61,7 +62,7 @@ public class SingleListingActivity extends Activity {
         getMenuInflater().inflate(R.menu.single_listing_menu, menu);
         MenuItem LogInOut = menu.findItem(R.id.listing_detail_log_in_out);
         Intent intent =(new Intent(this,LoginActivity.class));
-        if (true){//TODO replace with isLogged
+        if (User.isLogged){
             LogInOut.setTitle(R.string.log_out);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
         }

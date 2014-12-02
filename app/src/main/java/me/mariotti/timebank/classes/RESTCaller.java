@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
-    private String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
+    public static final String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
     final String TAG = "RESTCaller";
     private ListingAdapter mListingAdapter;
     private MainActivity mMainActivity;

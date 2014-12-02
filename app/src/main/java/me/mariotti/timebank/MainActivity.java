@@ -65,6 +65,17 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem LogInOut = menu.findItem(R.id.main_activity_log_in_out);
+        Intent intent =(new Intent(this,LoginActivity.class));
+        if (User.isLogged){
+            LogInOut.setTitle(R.string.log_out);
+            intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
+        }
+        else{
+            LogInOut.setTitle(R.string.log_in);
+            intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
+        }
+        LogInOut.setIntent(intent);
         return true;
     }
 
