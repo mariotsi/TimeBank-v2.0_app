@@ -2,6 +2,7 @@ package me.mariotti.timebank.classes;
 
 
 public class User {
+    public int id;
     public String email;
     public String username;
     public boolean is_active;
@@ -16,7 +17,8 @@ public class User {
     public String userCredentials;
     public static boolean isLogged = false;
 
-    public User(String email, String username, boolean is_active, boolean is_admin, int available_hours, int worked_hours, int requested_hours, int used_hours, String address, int city, String city_name, String userCredentials) {
+    public User(int id, String email, String username, boolean is_active, boolean is_admin, int available_hours, int worked_hours, int requested_hours, int used_hours, String address, int city, String city_name, String userCredentials) {
+        this.id = id;
         this.email = email;
         this.username = username;
         this.is_active = is_active;

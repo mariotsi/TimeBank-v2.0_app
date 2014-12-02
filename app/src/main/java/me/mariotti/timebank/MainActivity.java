@@ -25,7 +25,8 @@ public class MainActivity extends Activity {
     private ArrayList<Listing> mList;
     public ListingAdapter mListingAdapter;
     public ProgressDialog progress;
-    public static User loggedUser=null;
+    public static User loggedUser = null;
+    private Menu mOptionsMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class MainActivity extends Activity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(parent.getContext(),SingleListingActivity.class);
+                Intent intent = new Intent(parent.getContext(), SingleListingActivity.class);
                 intent.putExtra(LISTING_OBJECT, mListingAdapter.getItem(position));
                 startActivity(intent);
             }
@@ -63,15 +64,15 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mOptionsMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem LogInOut = menu.findItem(R.id.main_activity_log_in_out);
-        Intent intent =(new Intent(this,LoginActivity.class));
-        if (User.isLogged){
+        MenuItem LogInOut = mOptionsMenu.findItem(R.id.main_activity_log_in_out);
+        Intent intent = (new Intent(this, LoginActivity.class));
+        if (User.isLogged) {
             LogInOut.setTitle(R.string.log_out);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
-        }
-        else{
+        } else {
             LogInOut.setTitle(R.string.log_in);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
@@ -94,11 +95,22 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
-
-
+        if (mOptionsMenu != null) {
+            MenuItem LogInOut = mOptionsMenu.findItem(R.id.main_activity_log_in_out);
+            Intent intent = (new Intent(this, LoginActivity.class));
+            if (User.isLogged) {
+                LogInOut.setTitle(R.string.log_out);
+                intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
+            } else {
+                LogInOut.setTitle(R.string.log_in);
+                intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
+            }
+            LogInOut.setIntent(intent);
+        }
     }
 
     public void refreshListings() {

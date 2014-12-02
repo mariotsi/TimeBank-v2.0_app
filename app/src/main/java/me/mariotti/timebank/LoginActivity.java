@@ -33,6 +33,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -49,7 +50,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
+    private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
@@ -61,10 +62,23 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         setContentView(R.layout.activity_login);
         //TODO if ACTION==LOGOUT do a logout
         action = getIntent().getExtras().getInt(ACTION);
-        Toast.makeText(getBaseContext(), String.valueOf(getIntent().getExtras().getInt(ACTION)), Toast.LENGTH_SHORT).show();
-
+        //If the user is logging out don't create the Activity, just make the call to the API and kill the activity
+        if (action==LOGOUT){
+            mAuthTask = new UserLoginTask();
+            mAuthTask.execute(action);
+            try {
+                mAuthTask.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            finish();
+            Toast.makeText(getBaseContext(), getString(R.string.success_logged_out), Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mUsernameView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -107,11 +121,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
 
         // Reset errors.
-        mEmailView.setError(null);
+        mUsernameView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        String email = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -127,12 +141,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mUsernameView.setError(getString(R.string.error_field_required));
+            focusView = mUsernameView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+        } else if (!isUsernameValid(email)) {
+            mUsernameView.setError(getString(R.string.error_invalid_email));
+            focusView = mUsernameView;
             cancel = true;
         }
 
@@ -149,14 +163,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.length() > 4;
+    private boolean isUsernameValid(String username) {
+        return username.length() > 6 && username.length()<=40;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 6;
     }
 
     /**
@@ -246,7 +258,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 new ArrayAdapter<String>(LoginActivity.this,
                                          android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        mEmailView.setAdapter(adapter);
+        mUsernameView.setAdapter(adapter);
     }
 
     /**
@@ -256,13 +268,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     public class UserLoginTask extends AsyncTask<Integer, Void, JSONObject> {
 
         private static final String TAG = "Login";
-        private final String mEmail;
-        private final String mPassword;
+        private String mUsername="";
+        private String mPassword="";
         private String userCredentials;
 
         UserLoginTask(String email, String password) {
-            mEmail = email;
+            mUsername = email;
             mPassword = password;
+        }
+        UserLoginTask() {
         }
 
         @Override
@@ -271,8 +285,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             HttpURLConnection urlConnection = null;
             String urlString = RESTCaller.mServerUrl + "users/";
             try {
-                userCredentials = mEmail + ":" + mPassword;
-                String basicAuth = "Basic " + Base64.encodeToString(userCredentials.getBytes(), Base64.DEFAULT);
+                userCredentials = mUsername + ":" + mPassword;
+
+                String basicAuth = User.isLogged ? "Basic " + MainActivity.loggedUser.userCredentials :
+                        "Basic " + Base64.encodeToString(userCredentials.getBytes(), Base64.DEFAULT);
+
                 if (action[0] == LOGIN) {
                     urlString += "login/";
                 } else if (action[0] == LOGOUT) {
@@ -312,14 +329,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         @Override
         protected void onPostExecute(final JSONObject success) {
             mAuthTask = null;
-            showProgress(false);
+            if (mProgressView!=null) {
+                showProgress(false);
+            }
             try {
                 // 200 OK login, 410 OK (GONE) logout
                 switch (success.getInt("responseCode")) {
                     case 200:
                         User.isLogged = true;
                         JSONObject successBody = success.getJSONObject("responseBody");
-                        MainActivity.loggedUser = new User(successBody.getString("email"),
+                        MainActivity.loggedUser = new User(successBody.getInt("id"), successBody.getString("email"),
                                                            successBody.getString("username"), successBody.getBoolean("is_active"),
                                                            successBody.getBoolean("is_admin"), successBody.getInt("available_hours"),
                                                            successBody.getInt("worked_hours"), successBody.getInt("requested_hours"),
@@ -335,15 +354,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                         User.isLogged = false;
                         break;
                     case 401:
-                        mEmailView.setError(getString(R.string.error_incorrect_username_or_password));
-                        mEmailView.requestFocus();
+                        mUsernameView.setError(getString(R.string.error_incorrect_username_or_password));
+                        mUsernameView.requestFocus();
                         break;
                     default:
                         Toast.makeText(getBaseContext(), getString(R.string.error_generic_error), Toast.LENGTH_LONG).show();
+                        break;
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(getBaseContext(), getString(R.string.error_generic_error), Toast.LENGTH_LONG).show();
             }
         }
 

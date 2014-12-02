@@ -4,6 +4,7 @@ package me.mariotti.timebank.classes;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import me.mariotti.timebank.MainActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -96,4 +97,12 @@ public class Listing implements Parcelable{
             return new Listing[size];
         }
     };
+
+    public boolean imOwner(){
+        return MainActivity.loggedUser != null && MainActivity.loggedUser.id == owner;
+    }
+
+    public boolean iHaveRequetedThis(){
+        return MainActivity.loggedUser != null && MainActivity.loggedUser.id == applicant;
+    }
 }

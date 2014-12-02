@@ -12,29 +12,29 @@ import me.mariotti.timebank.classes.User;
 
 
 public class SingleListingActivity extends Activity {
-    Button mClaimButton;
+    private Button mClaimButton;
+    private Menu mOptionsMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.single_listing_activity);
         // TODO hide or show fields based on ownership
-        Bundle data= getIntent().getExtras();
+        Bundle data = getIntent().getExtras();
         Listing mListing = data.getParcelable(MainActivity.LISTING_OBJECT);
-        ((TextView)findViewById(R.id.descriptionText)).setText(mListing.description);
-        ((TextView)findViewById(R.id.categoryText)).setText(mListing.categoryName+mListing.categoryId);
-        ((TextView)findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
-        ((CheckBox)findViewById(R.id.checkBox_requested)).setChecked(!mListing.requested);
-        mClaimButton = (Button)findViewById(R.id.claimButton);
+        ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
+        ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName + mListing.categoryId);
+        ((TextView) findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
+        ((CheckBox) findViewById(R.id.checkBox_requested)).setChecked(!mListing.requested);
+        mClaimButton = (Button) findViewById(R.id.claimButton);
 
         mClaimButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick( View view) {
+            public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                if (true){//TODO replace with isLogged
+                if (true) {//TODO replace with isLogged
                     //do request - unrequest
-                }
-                else{
+                } else {
                     intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
                 }
                 startActivity(intent);
@@ -45,11 +45,22 @@ public class SingleListingActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (true){//TODO replace with isREquested and i can see that
+        if (mOptionsMenu != null) {
+            MenuItem LogInOut = mOptionsMenu.findItem(R.id.listing_detail_log_in_out);
+            Intent intent = (new Intent(this, LoginActivity.class));
+            if (User.isLogged) {
+                LogInOut.setTitle(R.string.log_out);
+                intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
+            } else {
+                LogInOut.setTitle(R.string.log_in);
+                intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
+            }
+            LogInOut.setIntent(intent);
+        }
+        if (true) {//TODO replace with isREquested and i can see that
             mClaimButton.setText(R.string.request_text);
 
-        }
-        else{
+        } else {
             mClaimButton.setText(R.string.unrequest_text);
 
         }
@@ -58,20 +69,19 @@ public class SingleListingActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mOptionsMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.single_listing_menu, menu);
-        MenuItem LogInOut = menu.findItem(R.id.listing_detail_log_in_out);
-        Intent intent =(new Intent(this,LoginActivity.class));
-        if (User.isLogged){
+        MenuItem LogInOut = mOptionsMenu.findItem(R.id.listing_detail_log_in_out);
+        Intent intent = (new Intent(this, LoginActivity.class));
+        if (User.isLogged) {
             LogInOut.setTitle(R.string.log_out);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
-        }
-        else{
+        } else {
             LogInOut.setTitle(R.string.log_in);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);
-
         return true;
     }
 
