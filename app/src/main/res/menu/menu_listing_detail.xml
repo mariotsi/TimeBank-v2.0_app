@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="me.mariotti.timebank.ListingDetailActivity">
+    <item android:id="@+id/menu__listing_detail__profile"
+          android:title="@string/menu__profile"
+          android:icon="@drawable/ic_action_profile"
+          android:orderInCategory="98"
+          android:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu__listing_detail__edit"
+          android:title="@string/edit"
+          android:icon="@drawable/ic_action_edit"
+          android:orderInCategory="1"
+          android:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu__listing_detail__delete"
+          android:title="@string/delete"
+          android:icon="@drawable/ic_action_cancel"
+          android:orderInCategory="2"
+          android:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu__listing_detail__log_in_out"
+          android:title="@string/log_in"
+          android:orderInCategory="100"
+          android:showAsAction="never"/>
+</menu>

@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
@@ -53,7 +52,7 @@ public class MainActivity extends Activity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(parent.getContext(), SingleListingActivity.class);
+                Intent intent = new Intent(parent.getContext(), ListingDetailActivity.class);
                 intent.putExtra(LISTING_OBJECT, mListingAdapter.getItem(position));
                 startActivity(intent);
             }
@@ -67,7 +66,7 @@ public class MainActivity extends Activity {
         mOptionsMenu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem LogInOut = mOptionsMenu.findItem(R.id.main_activity_log_in_out);
+        MenuItem LogInOut = mOptionsMenu.findItem(R.id.menu__main_activity__log_in_out);
         Intent intent = (new Intent(this, LoginActivity.class));
         if (User.isLogged) {
             LogInOut.setTitle(R.string.log_out);
@@ -81,6 +80,20 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem profile = mOptionsMenu.findItem(R.id.menu__main_activity__profile);
+        MenuItem add = mOptionsMenu.findItem(R.id.menu__main_activity__new);
+        if (User.isLogged) {
+            profile.setVisible(true);
+            add.setVisible(true);
+        } else {
+            profile.setVisible(false);
+            add.setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -88,7 +101,7 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.edit_menu_item) {
+        if (id == R.id.menu__listing_detail__edit) {
             return true;
         }
 
@@ -99,8 +112,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        invalidateOptionsMenu();
         if (mOptionsMenu != null) {
-            MenuItem LogInOut = mOptionsMenu.findItem(R.id.main_activity_log_in_out);
+            MenuItem LogInOut = mOptionsMenu.findItem(R.id.menu__main_activity__log_in_out);
             Intent intent = (new Intent(this, LoginActivity.class));
             if (User.isLogged) {
                 LogInOut.setTitle(R.string.log_out);

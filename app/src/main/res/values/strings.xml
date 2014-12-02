@@ -20,5 +20,7 @@
     <string name="error_incorrect_username_or_password">Incorrect username or password</string>
     <string name="error_generic_error">Error, retry</string>
     <string name="success_logged_out">You\'are now logged out</string>
+    <string name="menu__profile">Profile</string>
+    <string name="add">New listing</string>
 
 </resources>

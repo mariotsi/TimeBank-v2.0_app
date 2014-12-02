@@ -32,6 +32,7 @@ public class Listing implements Parcelable{
             id = json.getInt("id");
             description = json.getString("description");
             categoryId = json.getInt("category");
+            categoryName = json.getString("category_name");
             dateCreation = dateParser.parse(json.getString("creation_date"));
             owner=json.getInt("owner");
             applicant = json.getInt("applicant");
@@ -102,7 +103,7 @@ public class Listing implements Parcelable{
         return MainActivity.loggedUser != null && MainActivity.loggedUser.id == owner;
     }
 
-    public boolean iHaveRequetedThis(){
+    public boolean iHaveRequestedThis(){
         return MainActivity.loggedUser != null && MainActivity.loggedUser.id == applicant;
     }
 }

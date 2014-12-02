@@ -60,7 +60,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //TODO if ACTION==LOGOUT do a logout
         action = getIntent().getExtras().getInt(ACTION);
         //If the user is logging out don't create the Activity, just make the call to the API and kill the activity
         if (action==LOGOUT){
@@ -164,7 +163,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isUsernameValid(String username) {
-        return username.length() > 6 && username.length()<=40;
+        return username.length() >= 5 && username.length()<=40;
     }
 
     private boolean isPasswordValid(String password) {
@@ -262,7 +261,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
+     * Represents an asynchronous login/logout task used to authenticate
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Integer, Void, JSONObject> {

@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="me.mariotti.timebank.SingleListingActivity"
+            android:name=".ListingDetailActivity"
             android:label="@string/title_activity_listing" >
         </activity>
         <activity

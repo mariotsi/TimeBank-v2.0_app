@@ -7,7 +7,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context="me.mariotti.timebank.SingleListingActivity">
+              tools:context="me.mariotti.timebank.ListingDetailActivity">
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
     <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="@string/requested" android:id="@+id/textView"/>
+                  android:text="@string/requested" android:id="@+id/requested_label"/>
         <Space
                 android:layout_width="20px"
                 android:layout_height="20px"
