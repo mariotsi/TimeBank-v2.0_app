@@ -1,5 +1,6 @@
 package me.mariotti.timebank.classes;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,45 +17,20 @@ import java.util.ArrayList;
 
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
+    public static final int GET_LISTING_LIST = 1;
+
     public static final String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
+    protected String mResourceUrl;
     final String TAG = "RESTCaller";
-    private ListingAdapter mListingAdapter;
-    private MainActivity mMainActivity;
+    protected ListingAdapter mListingAdapter;
+    protected Activity mActivity;
+    protected int command;
+    protected int[] params;
 
-    @Override
-    protected void onPreExecute() {
-        mListingAdapter.clear();
-        super.onPreExecute();
-        mMainActivity.progress.show();
-    }
-
-    public RESTCaller(MainActivity mMainActivity) {
-        mListingAdapter = mMainActivity.mListingAdapter;
-        this.mMainActivity = mMainActivity;
-    }
-
-    @Override
-    protected void onPostExecute(JSONObject s) {
-        super.onPostExecute(s);
-        try {
-            if (!s.getBoolean("hasErrors")) {
-                JSONArray body = s.getJSONArray("responseBody");
-                ArrayList<Listing> listingsArray = new ArrayList<Listing>();
-                for (int i = 0; i < body.length(); i++) {
-                    listingsArray.add(new Listing(body.getJSONObject(i)));
-                    mListingAdapter.add(listingsArray.get(i));
-                }
-
-            } else {
-                Toast.makeText(mMainActivity.getBaseContext(), s.getString("errorMessage"), Toast.LENGTH_LONG).show();
-//                mListingAdapter.add("An error has occurred while downloading the listings list. Retry");
-            }
-        } catch (JSONException e) {
-            Log.e("RESTCaller", e.getMessage());
-        } finally {
-            mMainActivity.progress.hide();
-        }
-        mListingAdapter.notifyDataSetChanged();
+    public RESTCaller(Activity mActivity, int command, int... params) {
+        this.mActivity = mActivity;
+        this.command = command;
+        this.params = params;
     }
 
     @Override
@@ -62,11 +38,11 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         JSONObject mJSONObject = new JSONObject();
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(mServerUrl + "listings/"); //TODO shuold be listings/search to omit requested listings
+            URL url = new URL(mServerUrl + mResourceUrl); //TODO shuold be listings/search to omit requested listings
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
             mJSONObject = JsonUtils.urlResponseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
-        } catch (Exception e) {
+        } catch (Exception e) {//TODO errors 4xx should be used
             e.printStackTrace();
             try {
                 mJSONObject.put("hasErrors", true);

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import me.mariotti.timebank.RESTWorkers.ListingWorker;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
@@ -128,7 +129,7 @@ public class MainActivity extends Activity {
     }
 
     public void refreshListings() {
-        new RESTCaller(this).execute();
+        new ListingWorker(this,RESTCaller.GET_LISTING_LIST).execute();
     }
 
     public void refresh(MenuItem item) {
