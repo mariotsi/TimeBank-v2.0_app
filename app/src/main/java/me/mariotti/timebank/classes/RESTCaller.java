@@ -2,17 +2,12 @@ package me.mariotti.timebank.classes;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
 import me.mariotti.timebank.MainActivity;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
@@ -37,27 +32,36 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     protected JSONObject doInBackground(String... params) {
         JSONObject mJSONObject = new JSONObject();
         HttpURLConnection urlConnection = null;
+        int responseCode = 1000;
+        String responseMessage = "Unhandled error";
+        InputStreamReader in = null;
         try {
-            URL url = new URL(mServerUrl + mResourceUrl); //TODO shuold be listings/search to omit requested listings
+            URL url = new URL(mServerUrl + mResourceUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
-            InputStreamReader in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
-            mJSONObject = JsonUtils.urlResponseToJson(in, urlConnection.getResponseCode(), urlConnection.getResponseMessage());
-        } catch (Exception e) {//TODO errors 4xx should be used
-            e.printStackTrace();
+            if (User.isLogged) {
+                urlConnection.setRequestProperty("Authorization", "Basic " + MainActivity.loggedUser.userCredentials);
+            }
+            in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
+            responseCode = urlConnection.getResponseCode();
+            responseMessage = urlConnection.getResponseMessage();
+        } catch (Exception e) {
+            /*An error 4xx throw an exception. Here catch the error number after the exception is fired. If
+            urlConnection is not null but accessing it throws an IOException uses the default error code and get the
+             exception toString() as error message. If urlConnection is null uses the default error code and message. */
             try {
-                mJSONObject.put("hasErrors", true);
-                mJSONObject.put("errorMessage", e.toString());
-            } catch (JSONException e1) {
-                e1.printStackTrace();
+                responseCode = urlConnection != null ? urlConnection.getResponseCode() : responseCode;
+                responseMessage = urlConnection != null ? urlConnection.getResponseMessage() : responseMessage;
+            } catch (IOException e1) {
+                responseMessage = e1.toString();
             }
         } finally {
+            mJSONObject = JsonUtils.urlResponseToJson(in, responseCode, responseMessage);
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }
         return mJSONObject;
     }
-
 }
 
 

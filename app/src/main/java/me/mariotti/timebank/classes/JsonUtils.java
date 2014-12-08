@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
-/**
- * Created by Simone on 27/11/2014.
- */
+
 public class JsonUtils {
 
     private static final String TAG = "JSON Utils";
@@ -21,27 +19,37 @@ public class JsonUtils {
         String line;
         StringBuilder mStringBuilder = new StringBuilder("");
         String serverResponseMessage = "";
-        try {
-            BufferedReader br = new BufferedReader(mInputStreamReader);
-            while ((line = br.readLine()) != null)
-                mStringBuilder.append(line);
-            mInputStreamReader.close();
-            serverResponseMessage = mStringBuilder.toString();
-            Log.i(TAG, serverResponseMessage);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
         JSONObject response = new JSONObject();
+
+        if (mInputStreamReader != null) {//This could be null if in RESTCaller we had and exception (also for 4xx)
+            try {
+                BufferedReader br = new BufferedReader(mInputStreamReader);
+                while ((line = br.readLine()) != null)
+                    mStringBuilder.append(line);
+                mInputStreamReader.close();
+                serverResponseMessage = mStringBuilder.toString();
+                Log.i(TAG, serverResponseMessage);
+            } catch (UnsupportedEncodingException e) {
+                Log.e(TAG, e.getMessage());
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+
         try {
-            response.put("hasErrors", false);
-            response.put("responseCode", responseCode);
-            response.put("responseMessage", responseMessage);
-            if (serverResponseMessage.startsWith("[") && serverResponseMessage.endsWith("]")) {
-                response.put("responseBody", new JSONArray(serverResponseMessage));
+            if (responseCode < 1000) {//1000 and more are the only real error codes, 4xx should be handled in rest app
+                response.put("hasErrors", false);
+                response.put("responseCode", responseCode);
+                response.put("responseMessage", responseMessage);
+                if (serverResponseMessage.startsWith("[") && serverResponseMessage.endsWith("]")) {
+                    response.put("responseBody", new JSONArray(serverResponseMessage));
+                } else {
+                    response.put("responseBody", new JSONObject(serverResponseMessage));
+                }
             } else {
-                response.put("responseBody", new JSONObject(serverResponseMessage));
+                response.put("hasErrors", true);
+                response.put("errorCode", responseCode);
+                response.put("errorMessage", responseMessage);
             }
         } catch (JSONException e) {
             e.printStackTrace();

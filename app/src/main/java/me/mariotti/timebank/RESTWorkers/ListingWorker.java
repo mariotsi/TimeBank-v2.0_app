@@ -19,14 +19,13 @@ public class ListingWorker extends RESTCaller {
 
     public ListingWorker(Activity mActivity, int command, int... params) {
         super(mActivity, command, params);
-
     }
 
     @Override
     protected void onPreExecute() {
         switch (command) {
             case GET_LISTING_LIST:
-                mResourceUrl="listings/";
+                mResourceUrl="listings/";//TODO shuold be listings/search to omit requested listings
                 ((MainActivity) mActivity).progress.show();
                 mListingAdapter = ((MainActivity) this.mActivity).mListingAdapter;
                 mListingAdapter.clear();
@@ -38,14 +37,13 @@ public class ListingWorker extends RESTCaller {
         switch (command){
             case GET_LISTING_LIST:
                 try {
-                    if (!s.getBoolean("hasErrors")) {
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode")==200) {
                         JSONArray body = s.getJSONArray("responseBody");
                         ArrayList<Listing> listingsArray = new ArrayList<Listing>();
                         for (int i = 0; i < body.length(); i++) {
                             listingsArray.add(new Listing(body.getJSONObject(i)));
                             mListingAdapter.add(listingsArray.get(i));
                         }
-
                     } else {
                         Toast.makeText(mActivity.getBaseContext(), s.getString("errorMessage"), Toast.LENGTH_LONG).show();
                     }
@@ -58,6 +56,4 @@ public class ListingWorker extends RESTCaller {
                 break;
         }
     }
-
-
 }
