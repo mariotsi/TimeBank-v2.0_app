@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
     public ProgressDialog progress;
     public static User loggedUser = null;
     private Menu mOptionsMenu;
+    private static boolean areListingsOutdated =true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-        refreshListings();
+
 
     }
 
@@ -126,7 +127,10 @@ public class MainActivity extends Activity {
             }
             LogInOut.setIntent(intent);
         }
-        refreshListings();
+        if (areListingsOutdated) {
+            refreshListings();
+            areListingsOutdated = false;
+        }
     }
 
     public void refreshListings() {
@@ -135,5 +139,9 @@ public class MainActivity extends Activity {
 
     public void refresh(MenuItem item) {
         refreshListings();
+    }
+
+    public static void markListingsAsOutdated(){
+        areListingsOutdated=true;
     }
 }

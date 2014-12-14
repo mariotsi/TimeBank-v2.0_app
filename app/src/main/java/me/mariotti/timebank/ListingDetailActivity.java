@@ -58,6 +58,18 @@ public class ListingDetailActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateUI();
+    }
+
+    public void setListing(Listing mListing) {
+        this.mListing = mListing;
+    }
+
+    public int getListingId() {
+        return mListing.id;
+    }
+
+    public void updateUI() {
         invalidateOptionsMenu();
         if (mOptionsMenu != null) {
             MenuItem logInOut = mOptionsMenu.findItem(R.id.menu__listing_detail__log_in_out);
@@ -70,9 +82,8 @@ public class ListingDetailActivity extends Activity {
                 intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
             }
             logInOut.setIntent(intent);
-
         }
-        mRequestButton.setVisibility(!mListing.imOwner() && (mListing.iHaveRequestedThis()||(!mListing.requested&&User.isLogged))? View.VISIBLE : View.INVISIBLE);
+        mRequestButton.setVisibility(!mListing.imOwner() && (mListing.iHaveRequestedThis() || (!mListing.requested && User.isLogged)) ? View.VISIBLE : View.INVISIBLE);
         if (mListing.imOwner()) {
             mCheckBox.setVisibility(View.VISIBLE);
             mRequestedLabel.setVisibility(View.VISIBLE);
@@ -82,7 +93,7 @@ public class ListingDetailActivity extends Activity {
 
             if (mListing.iHaveRequestedThis()) {
                 mRequestButton.setText(getString(R.string.unrequest_text));
-            } else  {
+            } else {
                 mRequestButton.setText(getString(R.string.request_text));
             }
         }
@@ -90,7 +101,6 @@ public class ListingDetailActivity extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
         MenuItem profile = mOptionsMenu.findItem(R.id.menu__listing_detail__profile);
         if (User.isLogged) {
             profile.setVisible(true);
