@@ -1,12 +1,14 @@
 package me.mariotti.timebank;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import me.mariotti.timebank.RESTWorkers.ListingWorker;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.User;
 
@@ -17,6 +19,7 @@ public class ListingDetailActivity extends Activity {
     private Listing mListing;
     private CheckBox mCheckBox;
     private TextView mRequestedLabel;
+    public ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +39,18 @@ public class ListingDetailActivity extends Activity {
                 handleClickEvent();
             }
         });
+        progress = new ProgressDialog(this);
+        progress.setMessage("Loading listings");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
 
     }
 
     private void handleClickEvent() {
         if (mListing.iHaveRequestedThis()) {
-            //TODO unrequest
-            Toast.makeText(getBaseContext(), "UNREQUEST IT!", Toast.LENGTH_SHORT).show();
+            new ListingWorker(this, ListingWorker.UNREQUEST_LISTING, mListing.id).execute();
         } else {
-            //TODO request
-            Toast.makeText(getBaseContext(), "REQUEST IT!", Toast.LENGTH_SHORT).show();
+            new ListingWorker(this, ListingWorker.REQUEST_LISTING, mListing.id).execute();
         }
 
     }
@@ -67,7 +72,7 @@ public class ListingDetailActivity extends Activity {
             logInOut.setIntent(intent);
 
         }
-        mRequestButton.setVisibility(!mListing.imOwner() && User.isLogged ? View.VISIBLE : View.INVISIBLE);
+        mRequestButton.setVisibility(!mListing.imOwner() && (mListing.iHaveRequestedThis()||(!mListing.requested&&User.isLogged))? View.VISIBLE : View.INVISIBLE);
         if (mListing.imOwner()) {
             mCheckBox.setVisibility(View.VISIBLE);
             mRequestedLabel.setVisibility(View.VISIBLE);
@@ -77,7 +82,7 @@ public class ListingDetailActivity extends Activity {
 
             if (mListing.iHaveRequestedThis()) {
                 mRequestButton.setText(getString(R.string.unrequest_text));
-            } else {
+            } else  {
                 mRequestButton.setText(getString(R.string.request_text));
             }
         }

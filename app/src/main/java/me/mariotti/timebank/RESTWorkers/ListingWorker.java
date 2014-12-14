@@ -3,6 +3,7 @@ package me.mariotti.timebank.RESTWorkers;
 import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
+import me.mariotti.timebank.ListingDetailActivity;
 import me.mariotti.timebank.MainActivity;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.RESTCaller;
@@ -30,10 +31,21 @@ public class ListingWorker extends RESTCaller {
                 mListingAdapter = ((MainActivity) this.mActivity).mListingAdapter;
                 mListingAdapter.clear();
                 break;
+            case REQUEST_LISTING:
+                mResourceUrl="listings/"+params[0]+"/claim/";
+                HttpMethod="PUT";
+                ((ListingDetailActivity) mActivity).progress.show();
+                break;
+            case UNREQUEST_LISTING:
+                mResourceUrl="listings/"+params[0]+"/unclaim/";
+                HttpMethod="DELETE";
+                ((ListingDetailActivity) mActivity).progress.show();
+                break;
         }
     }
     @Override
     protected void onPostExecute(JSONObject s) {
+        String message="Generic Error";
         switch (command){
             case GET_LISTING_LIST:
                 try {
@@ -54,6 +66,58 @@ public class ListingWorker extends RESTCaller {
                 }
                 mListingAdapter.notifyDataSetChanged();
                 break;
+            case REQUEST_LISTING:
+                try {
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode")==201) {
+                        message ="Listing successfully requested";
+                    } else {
+                        switch (s.getInt("responseCode")){
+                            case 404:
+                                message="Listing not found";
+                                break;
+                            case 403:
+                                message="Listing's owner cannot request it";
+                                break;
+                            case 406:
+                                message="Listing already requested";
+                                break;
+                            default:
+                                message=s.getString("errorMessage");
+                                break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.e("RESTCaller", e.getMessage());
+                } finally {
+                    ((ListingDetailActivity)mActivity).progress.hide();
+                    Toast.makeText(mActivity.getBaseContext(),message, Toast.LENGTH_LONG).show();
+                }
+                break;
+            case UNREQUEST_LISTING:
+                try {
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode")==410) {
+                        message ="Listing successfully unrequested";
+                    } else {
+                        switch (s.getInt("responseCode")){
+                            case 404:
+                                message="Listing not found";
+                                break;
+                            case 403:
+                                message="You have not requested this listing (or the listing is not requested at all)";
+                                break;
+                            default:
+                                message=s.getString("errorMessage");
+                                break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.e("RESTCaller", e.getMessage());
+                } finally {
+                    ((ListingDetailActivity)mActivity).progress.hide();
+                    Toast.makeText(mActivity.getBaseContext(),message, Toast.LENGTH_LONG).show();
+                }
+                break;
+
         }
     }
 }

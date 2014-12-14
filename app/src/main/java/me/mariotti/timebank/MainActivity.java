@@ -126,6 +126,7 @@ public class MainActivity extends Activity {
             }
             LogInOut.setIntent(intent);
         }
+        refreshListings();
     }
 
     public void refreshListings() {

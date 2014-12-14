@@ -13,6 +13,8 @@ import java.net.URL;
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
     public static final int GET_LISTING_LIST = 1;
+    public static final int REQUEST_LISTING = 2;
+    public static final int UNREQUEST_LISTING = 3;
 
     public static final String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
     protected String mResourceUrl;
@@ -21,6 +23,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     protected Activity mActivity;
     protected int command;
     protected int[] params;
+    protected String HttpMethod = "GET";
 
     public RESTCaller(Activity mActivity, int command, int... params) {
         this.mActivity = mActivity;
@@ -38,6 +41,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         try {
             URL url = new URL(mServerUrl + mResourceUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod(HttpMethod);
             if (User.isLogged) {
                 urlConnection.setRequestProperty("Authorization", "Basic " + MainActivity.loggedUser.userCredentials);
             }
