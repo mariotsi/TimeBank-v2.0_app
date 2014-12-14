@@ -44,7 +44,8 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
         TextView description = (TextView) mView.findViewById(R.id.row_descriptionText);
         TextView category = (TextView) mView.findViewById(R.id.row_categoryText);
         TextView date = (TextView) mView.findViewById(R.id.row_dateText);
-        description.setText(mListing.description);
+
+        description.setText(mListing.description.length() > 200 ? mListing.description.substring(0, 200) + "..." : mListing.description);
         category.setText(mListing.categoryName);
         date.setText(Listing.dateFormatter.format(mListing.dateCreation));
 
