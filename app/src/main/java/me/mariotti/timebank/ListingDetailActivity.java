@@ -47,7 +47,7 @@ public class ListingDetailActivity extends Activity {
     }
 
     private void handleClickEvent() {
-        if (mListing.iHaveRequestedThis()) {
+        if (mListing.imTheApplicant()) {
             new ListingWorker(this, ListingWorker.UNREQUEST_LISTING, mListing.id).execute();
         } else {
             new ListingWorker(this, ListingWorker.REQUEST_LISTING, mListing.id).execute();
@@ -83,15 +83,14 @@ public class ListingDetailActivity extends Activity {
             }
             logInOut.setIntent(intent);
         }
-        mRequestButton.setVisibility(!mListing.imOwner() && (mListing.iHaveRequestedThis() || (!mListing.requested && User.isLogged)) ? View.VISIBLE : View.INVISIBLE);
+        mRequestButton.setVisibility(!mListing.imOwner() && User.isLogged && (mListing.imTheApplicant() || !mListing.requested ) ? View.VISIBLE : View.INVISIBLE);
         if (mListing.imOwner()) {
             mCheckBox.setVisibility(View.VISIBLE);
             mRequestedLabel.setVisibility(View.VISIBLE);
         } else {
             mCheckBox.setVisibility(View.INVISIBLE);
             mRequestedLabel.setVisibility(View.INVISIBLE);
-
-            if (mListing.iHaveRequestedThis()) {
+            if (mListing.imTheApplicant()) {
                 mRequestButton.setText(getString(R.string.unrequest_text));
             } else {
                 mRequestButton.setText(getString(R.string.request_text));

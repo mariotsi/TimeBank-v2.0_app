@@ -103,7 +103,7 @@ public class Listing implements Parcelable{
         return MainActivity.loggedUser != null && MainActivity.loggedUser.id == owner;
     }
 
-    public boolean iHaveRequestedThis(){
+    public boolean imTheApplicant(){
         return MainActivity.loggedUser != null && MainActivity.loggedUser.id == applicant;
     }
 }
