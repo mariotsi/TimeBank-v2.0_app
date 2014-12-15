@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 
 public class UserWorker extends RESTCaller {
-    public UserWorker(Activity mActivity, int command, int... params) {
+    public UserWorker(Activity mActivity, int command, String... params) {
         super(mActivity, command, params);
     }
 

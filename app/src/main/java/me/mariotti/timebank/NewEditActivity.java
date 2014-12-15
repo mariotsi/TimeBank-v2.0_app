@@ -1,0 +1,92 @@
+package me.mariotti.timebank;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import me.mariotti.timebank.RESTWorkers.CategoryWorker;
+import me.mariotti.timebank.RESTWorkers.ListingWorker;
+import me.mariotti.timebank.classes.RESTCaller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
+public class NewEditActivity extends Activity {
+
+    public static final java.lang.String ACTION = "me.mariotti.timebank.NewEditActivity.ACTION";
+    public static final int NEW = 1;
+    public static final int EDIT = 2;
+    private int action;
+    private Spinner categorySpinner;
+    public ArrayAdapter<String> categorySpinnerAdapter;
+    public ArrayList<String> categoryList;
+    public ProgressDialog progress;
+    public HashMap<String, Integer> categoryMap;
+    private EditText categoryText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        progress = new ProgressDialog(this);
+        progress.setMessage("Loading...");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        setContentView(R.layout.activity_new_edit);
+        action = getIntent().getExtras().getInt(ACTION);
+        categoryMap = new HashMap<>();
+        categoryList = new ArrayList<>();
+        categorySpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
+        categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner = (Spinner) findViewById(R.id.category_spinner);
+        categorySpinner.setAdapter(categorySpinnerAdapter);
+        categoryText = (EditText)findViewById(R.id.description_editText);
+        new CategoryWorker(this, RESTCaller.GET_CATEGORIES).execute();
+        if (action == NEW) {
+        } else if (action == EDIT) {
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_new_edit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.menu__newedit_activity__save) {
+            if (action == NEW) {
+                createListing();
+            } else if (action == EDIT) {
+                editListing();
+            }
+        }
+        return true;
+
+    }
+
+    private void editListing() {
+    }
+
+    private void createListing() {
+        if (categoryText.getText().toString().length()>0){
+            String categoryName = categorySpinner.getSelectedItem().toString();
+            int categoryId = categoryMap.get(categoryName);
+            new ListingWorker(this,RESTCaller.CREATE_LISTING,categoryText.getText().toString(),String.valueOf(categoryId)).execute();
+        }
+
+    }
+}

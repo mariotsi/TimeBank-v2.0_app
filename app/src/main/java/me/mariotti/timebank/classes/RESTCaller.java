@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import me.mariotti.timebank.MainActivity;
 import org.json.JSONObject;
+
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
@@ -17,6 +21,10 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     public static final int UNREQUEST_LISTING = 3;
     public static final int GET_SINGLE_LISTING = 4;
     public static final int GET_MY_PROFILE = 5;
+    public static final int GET_CATEGORIES = 6;
+    public static final int CREATE_LISTING = 7;
+    public static final int EDIT_LISTING = 8;
+    public static final int DELETE_LISTING = 9;
 
     public static final String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
     protected String mResourceUrl;
@@ -24,10 +32,14 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     protected ListingAdapter mListingAdapter;
     protected Activity mActivity;
     protected int command;
-    protected int[] params;
+    protected String[] params;
     protected String HttpMethod = "GET";
+    protected boolean doOutput = false;
+    protected boolean doInput = true;
+    protected String description="";
+    protected String category=""+0;
 
-    public RESTCaller(Activity mActivity, int command, int... params) {
+    public RESTCaller(Activity mActivity, int command, String... params) {
         this.mActivity = mActivity;
         this.command = command;
         this.params = params;
@@ -40,14 +52,41 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
         int responseCode = 1000;
         String responseMessage = "Unhandled error";
         InputStreamReader in = null;
+        OutputStream out = null;
         try {
+
+            //Default behaviour is doInput, dont doOutput and use GET method
             URL url = new URL(mServerUrl + mResourceUrl);
+            byte[] postDataBytes=null;
+            if (doOutput){
+                StringBuilder postData = new StringBuilder();
+                postData.append(URLEncoder.encode("description", "UTF-8"));
+                postData.append('=');
+                postData.append(URLEncoder.encode(description, "UTF-8"));
+                postData.append('&');
+                postData.append(URLEncoder.encode("category", "UTF-8"));
+                postData.append('=');
+                postData.append(URLEncoder.encode(category, "UTF-8"));
+                postDataBytes = postData.toString().getBytes("UTF-8");
+            }
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(HttpMethod);
+            if (doOutput){
+                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                urlConnection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+            }
+            urlConnection.setDoInput(doInput);
+            urlConnection.setDoOutput(doOutput);
             if (User.isLogged) {
                 urlConnection.setRequestProperty("Authorization", "Basic " + MainActivity.loggedUser.userCredentials);
             }
-            in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
+            if (doInput) {
+                in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
+            }
+            if (doOutput) {
+                out = urlConnection.getOutputStream();
+                out.write(postDataBytes);
+            }
             responseCode = urlConnection.getResponseCode();
             responseMessage = urlConnection.getResponseMessage();
         } catch (Exception e) {

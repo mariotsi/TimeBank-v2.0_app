@@ -50,9 +50,9 @@ public class ListingDetailActivity extends Activity {
 
     private void handleClickEvent() {
         if (mListing.imTheApplicant()) {
-            new ListingWorker(this, ListingWorker.UNREQUEST_LISTING, mListing.id).execute();
+            new ListingWorker(this, ListingWorker.UNREQUEST_LISTING, String.valueOf(mListing.id)).execute();
         } else {
-            new ListingWorker(this, ListingWorker.REQUEST_LISTING, mListing.id).execute();
+            new ListingWorker(this, ListingWorker.REQUEST_LISTING, String.valueOf(mListing.id)).execute();
         }
 
     }

@@ -104,8 +104,10 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.menu__listing_detail__edit) {
-            return true;
+        if (id == R.id.menu__main_activity__new) {
+            Intent intent= new Intent(this,NewEditActivity.class);
+            intent.putExtra(NewEditActivity.ACTION,NewEditActivity.NEW);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

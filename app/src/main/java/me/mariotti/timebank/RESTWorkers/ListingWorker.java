@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 import me.mariotti.timebank.ListingDetailActivity;
 import me.mariotti.timebank.MainActivity;
+import me.mariotti.timebank.NewEditActivity;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.RESTCaller;
 import org.json.JSONArray;
@@ -17,7 +18,8 @@ import java.util.ArrayList;
 public class ListingWorker extends RESTCaller {
 
 
-    public ListingWorker(Activity mActivity, int command, int... params) {
+
+    public ListingWorker(Activity mActivity, int command, String... params) {
         super(mActivity, command, params);
     }
 
@@ -43,6 +45,16 @@ public class ListingWorker extends RESTCaller {
             case GET_SINGLE_LISTING:
                 mResourceUrl = "listings/" + params[0] + "/";
                 ((ListingDetailActivity) mActivity).progress.show();
+                break;
+            case CREATE_LISTING:
+                HttpMethod="POST";
+                doOutput=true;
+                doInput=false;//Ignore the returned new listing
+                description=params[0];
+                category=params[1];
+                mResourceUrl = "listings/";
+                ((NewEditActivity) mActivity).progress.setMessage("Creating listing");
+                ((NewEditActivity) mActivity).progress.show();
                 break;
         }
     }
@@ -76,7 +88,7 @@ public class ListingWorker extends RESTCaller {
                         message = "Listing successfully requested";
                         //update the listing stored in the Activity with the updated version from server, then updateUI
                         //and force Listings Refresh next time the Main Activity is shown
-                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING,  ((ListingDetailActivity) mActivity).getListingId()).execute();
+                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING,  String.valueOf(((ListingDetailActivity) mActivity).getListingId())).execute();
                         ((ListingDetailActivity) mActivity).updateUI();
                         MainActivity.markListingsAsOutdated();
                     } else {
@@ -108,7 +120,7 @@ public class ListingWorker extends RESTCaller {
                         message = "Listing successfully unrequested";
                         //update the listing stored in the Activity with the updated version from server, then updateUI
                         //and force Listings Refresh next time the Main Activity is shown
-                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING,  ((ListingDetailActivity) mActivity).getListingId()).execute();
+                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING,  String.valueOf(((ListingDetailActivity) mActivity).getListingId())).execute();
                         ((ListingDetailActivity) mActivity).updateUI();
                         MainActivity.markListingsAsOutdated();
                     } else {
@@ -154,6 +166,29 @@ public class ListingWorker extends RESTCaller {
                     ((ListingDetailActivity) mActivity).progress.hide();
                     if (responseCode!=200)
                     Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
+                }
+                break;
+            case CREATE_LISTING:
+                try {
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
+                        message = "Listing successfully created";
+                        MainActivity.markListingsAsOutdated();
+                    } else {
+                        switch (s.getInt("responseCode")) {
+                            case 204:
+                                message = "Empty description";
+                                break;
+                            default:
+                                message = s.getString("errorMessage");
+                                break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.e("RESTCaller", e.getMessage());
+                } finally {
+                    ((NewEditActivity) mActivity).progress.hide();
+                    Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
+                    mActivity.finish();
                 }
                 break;
 

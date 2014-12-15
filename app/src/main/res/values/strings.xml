@@ -25,6 +25,8 @@
     <string name="title_activity_profile">Profile</string>
     <string name="title_section1">My listings</string>
     <string name="title_section2">Listings requested</string>
-
+    <string name="title_activity_new_edit">NewEditActivity</string>
+    <string name="description_label">Description</string>
+    <string name="save">Save</string>
 
 </resources>

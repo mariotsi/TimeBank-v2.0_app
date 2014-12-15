@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import me.mariotti.timebank.LoginActivity;
+import me.mariotti.timebank.NewEditActivity;
 import me.mariotti.timebank.R;
 import me.mariotti.timebank.RESTWorkers.UserWorker;
 import me.mariotti.timebank.classes.Listing;
@@ -111,6 +112,11 @@ public class ProfileActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu__profile_activity__refresh) {
             refreshListings();
+        }
+        if (id == R.id.menu__profile_activity__new) {
+            Intent intent= new Intent(this,NewEditActivity.class);
+            intent.putExtra(NewEditActivity.ACTION,NewEditActivity.NEW);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

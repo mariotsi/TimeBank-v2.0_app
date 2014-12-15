@@ -36,6 +36,10 @@
             android:name=".profile.ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
+        <activity
+            android:name=".NewEditActivity"
+            android:label="@string/title_activity_new_edit" >
+        </activity>
     </application>
 
 </manifest>
