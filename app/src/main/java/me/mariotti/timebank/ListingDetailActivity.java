@@ -88,6 +88,7 @@ public class ListingDetailActivity extends Activity {
         mRequestButton.setVisibility(!mListing.imOwner() && User.isLogged && (mListing.imTheApplicant() || !mListing.requested ) ? View.VISIBLE : View.INVISIBLE);
         if (mListing.imOwner()) {
             mCheckBox.setVisibility(View.VISIBLE);
+            mCheckBox.setChecked(mListing.requested);
             mRequestedLabel.setVisibility(View.VISIBLE);
         } else {
             mCheckBox.setVisibility(View.INVISIBLE);

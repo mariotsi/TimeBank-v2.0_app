@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
@@ -27,6 +29,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     public static final int DELETE_LISTING = 9;
 
     public static final String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
+    private final HashMap<String, Object> outDataMap;
     protected String mResourceUrl;
     final String TAG = "RESTCaller";
     protected ListingAdapter mListingAdapter;
@@ -36,12 +39,12 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     protected String HttpMethod = "GET";
     protected boolean doOutput = false;
     protected boolean doInput = true;
-    protected String description="";
-    protected String category=""+0;
 
-    public RESTCaller(Activity mActivity, int command, String... params) {
+
+    public RESTCaller(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
         this.mActivity = mActivity;
         this.command = command;
+        this.outDataMap=outDataMap;
         this.params = params;
     }
 
@@ -60,14 +63,14 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             byte[] postDataBytes=null;
             if (doOutput){
                 StringBuilder postData = new StringBuilder();
-                postData.append(URLEncoder.encode("description", "UTF-8"));
-                postData.append('=');
-                postData.append(URLEncoder.encode(description, "UTF-8"));
-                postData.append('&');
-                postData.append(URLEncoder.encode("category", "UTF-8"));
-                postData.append('=');
-                postData.append(URLEncoder.encode(category, "UTF-8"));
+                for (Map.Entry<String,Object> param : outDataMap.entrySet()) {
+                    if (postData.length() != 0) postData.append('&');
+                    postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                    postData.append('=');
+                    postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+                }
                 postDataBytes = postData.toString().getBytes("UTF-8");
+
             }
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(HttpMethod);
@@ -80,13 +83,14 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             if (User.isLogged) {
                 urlConnection.setRequestProperty("Authorization", "Basic " + MainActivity.loggedUser.userCredentials);
             }
-            if (doInput) {
-                in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
-            }
             if (doOutput) {
                 out = urlConnection.getOutputStream();
                 out.write(postDataBytes);
             }
+            if (doInput) {
+                in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
+            }
+
             responseCode = urlConnection.getResponseCode();
             responseMessage = urlConnection.getResponseMessage();
         } catch (Exception e) {

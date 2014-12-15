@@ -13,14 +13,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ListingWorker extends RESTCaller {
 
 
 
-    public ListingWorker(Activity mActivity, int command, String... params) {
-        super(mActivity, command, params);
+    public ListingWorker(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
+        super(mActivity, command, outDataMap, params);
+    }
+    public ListingWorker(Activity mActivity, int command,  String... params) {
+        super(mActivity, command, null, params);
     }
 
     @Override
@@ -50,10 +54,16 @@ public class ListingWorker extends RESTCaller {
                 HttpMethod="POST";
                 doOutput=true;
                 doInput=false;//Ignore the returned new listing
-                description=params[0];
-                category=params[1];
                 mResourceUrl = "listings/";
                 ((NewEditActivity) mActivity).progress.setMessage("Creating listing");
+                ((NewEditActivity) mActivity).progress.show();
+                break;
+            case EDIT_LISTING:
+                HttpMethod="PUT";
+                doOutput=true;
+                doInput=true;
+                mResourceUrl = "listings/"+params[0]+"/";
+                ((NewEditActivity) mActivity).progress.setMessage("Editing listing");
                 ((NewEditActivity) mActivity).progress.show();
                 break;
         }
@@ -88,7 +98,7 @@ public class ListingWorker extends RESTCaller {
                         message = "Listing successfully requested";
                         //update the listing stored in the Activity with the updated version from server, then updateUI
                         //and force Listings Refresh next time the Main Activity is shown
-                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING,  String.valueOf(((ListingDetailActivity) mActivity).getListingId())).execute();
+                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING, String.valueOf(((ListingDetailActivity) mActivity).getListingId())).execute();
                         ((ListingDetailActivity) mActivity).updateUI();
                         MainActivity.markListingsAsOutdated();
                     } else {
@@ -169,6 +179,35 @@ public class ListingWorker extends RESTCaller {
                 }
                 break;
             case CREATE_LISTING:
+                try {
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
+                        message = "Listing successfully edited";
+                        MainActivity.markListingsAsOutdated();
+                    } else {
+                        switch (s.getInt("responseCode")) {
+                            case 204:
+                                message = "Empty description";
+                                break;
+                            case 404:
+                                message = "Listing not found";
+                                break;
+                            case 403:
+                                message = "You are not owner of given listing";
+                                break;
+                            default:
+                                message = s.getString("errorMessage");
+                                break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.e("RESTCaller", e.getMessage());
+                } finally {
+                    ((NewEditActivity) mActivity).progress.hide();
+                    Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
+                    mActivity.finish();
+                }
+                break;
+            case EDIT_LISTING:
                 try {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
                         message = "Listing successfully created";

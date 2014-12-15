@@ -3,8 +3,6 @@ package me.mariotti.timebank.RESTWorkers;
 import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
-import me.mariotti.timebank.ListingDetailActivity;
-import me.mariotti.timebank.MainActivity;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
@@ -14,11 +12,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class UserWorker extends RESTCaller {
+    public UserWorker(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
+        super(mActivity, command, outDataMap, params);
+    }
     public UserWorker(Activity mActivity, int command, String... params) {
-        super(mActivity, command, params);
+        super(mActivity, command, null, params);
     }
 
     protected void onPreExecute() {

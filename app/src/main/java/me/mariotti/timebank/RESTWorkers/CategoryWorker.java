@@ -5,10 +5,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import me.mariotti.timebank.NewEditActivity;
-import me.mariotti.timebank.classes.Listing;
-import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
-import me.mariotti.timebank.profile.ProfileActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +15,11 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class CategoryWorker extends RESTCaller {
+    public CategoryWorker(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
+        super(mActivity, command, outDataMap, params);
+    }
     public CategoryWorker(Activity mActivity, int command, String... params) {
-        super(mActivity, command, params);
+        super(mActivity, command, null, params);
     }
 
     protected void onPreExecute() {
@@ -50,9 +50,9 @@ public class CategoryWorker extends RESTCaller {
                         for (int i = 0; i < body.length(); i++) {
                             tempId = body.getJSONObject(i).getInt("category_id");
                             tempName = body.getJSONObject(i).getString("name");
-                            categoryMap.put(tempName,tempId);
+                            categoryMap.put(tempName, tempId);
                             categoryList.add(tempName);
-                                                    }
+                        }
                         Collections.sort(categoryList);
                         categorySpinnerAdapter.notifyDataSetChanged();
                     } else {

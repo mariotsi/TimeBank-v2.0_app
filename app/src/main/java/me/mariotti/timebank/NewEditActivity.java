@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import me.mariotti.timebank.RESTWorkers.CategoryWorker;
 import me.mariotti.timebank.RESTWorkers.ListingWorker;
+import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.RESTCaller;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class NewEditActivity extends Activity {
     public static final java.lang.String ACTION = "me.mariotti.timebank.NewEditActivity.ACTION";
     public static final int NEW = 1;
     public static final int EDIT = 2;
+    private static final String LISTING_OBJECT = "me.mariotti.timebank.NewEditActivity.LISTING_OBJECT";
     private int action;
     private Spinner categorySpinner;
     public ArrayAdapter<String> categorySpinnerAdapter;
@@ -28,6 +30,7 @@ public class NewEditActivity extends Activity {
     public ProgressDialog progress;
     public HashMap<String, Integer> categoryMap;
     private EditText categoryText;
+    public Listing mListing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +47,14 @@ public class NewEditActivity extends Activity {
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner = (Spinner) findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
-        categoryText = (EditText)findViewById(R.id.description_editText);
-        new CategoryWorker(this, RESTCaller.GET_CATEGORIES).execute();
+        categoryText = (EditText) findViewById(R.id.description_editText);
+        new CategoryWorker(this, RESTCaller.GET_CATEGORIES, null).execute();
         if (action == NEW) {
+            setTitle("Create listing");
         } else if (action == EDIT) {
+            setTitle("Edit listing");
+            Bundle data = getIntent().getExtras();
+            mListing = data.getParcelable(LISTING_OBJECT);
         }
     }
 
@@ -82,10 +89,14 @@ public class NewEditActivity extends Activity {
     }
 
     private void createListing() {
-        if (categoryText.getText().toString().length()>0){
+        if (categoryText.getText().toString().length() > 0) {
             String categoryName = categorySpinner.getSelectedItem().toString();
-            int categoryId = categoryMap.get(categoryName);
-            new ListingWorker(this,RESTCaller.CREATE_LISTING,categoryText.getText().toString(),String.valueOf(categoryId)).execute();
+            HashMap<String, Object> tempMap = new HashMap<>(1);
+            Integer categoryId = categoryMap.get(categoryName);
+            tempMap.put("category", categoryId);
+            tempMap.put("description", categoryText.getText().toString());
+
+            new ListingWorker(this, RESTCaller.CREATE_LISTING, tempMap).execute();
         }
 
     }
