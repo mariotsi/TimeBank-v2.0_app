@@ -24,11 +24,9 @@ import me.mariotti.timebank.classes.ListingAdapter;
  * create an instance of this fragment.
  */
 public class ListingsRequested extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private ListingAdapter mRequestedListingAdapter;
     private ListView mListView;
@@ -42,7 +40,6 @@ public class ListingsRequested extends Fragment {
      *
      * @return A new instance of fragment ListingsRequested.
      */
-    // TODO: Rename and change types and number of parameters
     public static ListingsRequested newInstance(String param1) {
         ListingsRequested fragment = new ListingsRequested();
         Bundle args = new Bundle();
