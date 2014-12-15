@@ -128,10 +128,9 @@ public class ListingWorker extends RESTCaller {
                 try {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 410) {
                         message = "Listing successfully unrequested";
-                        //update the listing stored in the Activity with the updated version from server, then updateUI
-                        //and force Listings Refresh next time the Main Activity is shown
-                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING,  String.valueOf(((ListingDetailActivity) mActivity).getListingId())).execute();
-                        ((ListingDetailActivity) mActivity).updateUI();
+                                              JSONObject body = s.getJSONObject("responseBody");
+                        ((NewEditActivity) mActivity).mListing=new Listing(body);
+                        ((NewEditActivity) mActivity).updateUI();
                         MainActivity.markListingsAsOutdated();
                     } else {
                         switch (s.getInt("responseCode")) {
@@ -181,18 +180,12 @@ public class ListingWorker extends RESTCaller {
             case CREATE_LISTING:
                 try {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
-                        message = "Listing successfully edited";
+                        message = "Listing successfully created";
                         MainActivity.markListingsAsOutdated();
                     } else {
                         switch (s.getInt("responseCode")) {
                             case 204:
                                 message = "Empty description";
-                                break;
-                            case 404:
-                                message = "Listing not found";
-                                break;
-                            case 403:
-                                message = "You are not owner of given listing";
                                 break;
                             default:
                                 message = s.getString("errorMessage");
@@ -210,12 +203,19 @@ public class ListingWorker extends RESTCaller {
             case EDIT_LISTING:
                 try {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
-                        message = "Listing successfully created";
+                        message = "Listing successfully edited";
                         MainActivity.markListingsAsOutdated();
+                        ListingDetailActivity.markListingsAsOutdated();
                     } else {
                         switch (s.getInt("responseCode")) {
                             case 204:
                                 message = "Empty description";
+                                break;
+                            case 404:
+                                message = "Listing not found";
+                                break;
+                            case 403:
+                                message = "You are not owner of given listing";
                                 break;
                             default:
                                 message = s.getString("errorMessage");

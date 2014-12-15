@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.*;
 import me.mariotti.timebank.RESTWorkers.ListingWorker;
 import me.mariotti.timebank.classes.Listing;
+import me.mariotti.timebank.classes.RESTCaller;
 import me.mariotti.timebank.classes.User;
 import me.mariotti.timebank.profile.ProfileActivity;
 
@@ -22,6 +23,7 @@ public class ListingDetailActivity extends Activity {
     private CheckBox mCheckBox;
     private TextView mRequestedLabel;
     public ProgressDialog progress;
+    private static boolean areListingsOutdated =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,6 @@ public class ListingDetailActivity extends Activity {
         setContentView(R.layout.single_listing_activity);
         Bundle data = getIntent().getExtras();
         mListing = data.getParcelable(LISTING_OBJECT);
-        ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
-        ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName);
-        ((TextView) findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
-        (mCheckBox = (CheckBox) findViewById(R.id.checkBox_requested)).setChecked(!mListing.requested);
         mRequestedLabel = (TextView) findViewById(R.id.requested_label);
         mRequestButton = (Button) findViewById(R.id.claimButton);
         mRequestButton.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +58,10 @@ public class ListingDetailActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (areListingsOutdated){
+            new ListingWorker(this, RESTCaller.GET_SINGLE_LISTING, String.valueOf(getListingId())).execute();
+            areListingsOutdated=false;
+        }
         updateUI();
     }
 
@@ -72,6 +74,10 @@ public class ListingDetailActivity extends Activity {
     }
 
     public void updateUI() {
+        ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
+        ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName);
+        ((TextView) findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
+        (mCheckBox = (CheckBox) findViewById(R.id.checkBox_requested)).setChecked(!mListing.requested);
         invalidateOptionsMenu();
         if (mOptionsMenu != null) {
             MenuItem logInOut = mOptionsMenu.findItem(R.id.menu__listing_detail__log_in_out);
@@ -99,6 +105,7 @@ public class ListingDetailActivity extends Activity {
                 mRequestButton.setText(getString(R.string.request_text));
             }
         }
+
     }
 
     @Override
@@ -147,14 +154,18 @@ public class ListingDetailActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu__listing_detail__edit) {
-            return true;
+            Intent intent = new Intent(this, NewEditActivity.class);
+            intent.putExtra(NewEditActivity.LISTING_OBJECT, mListing);
+            intent.putExtra(NewEditActivity.ACTION, NewEditActivity.EDIT);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void editListing(MenuItem item) {
-    }
 
     public void deleteListing(MenuItem item) {
+    }
+    public static void markListingsAsOutdated(){
+        areListingsOutdated=true;
     }
 }

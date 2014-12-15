@@ -109,7 +109,6 @@ public class MainActivity extends Activity {
             intent.putExtra(NewEditActivity.ACTION,NewEditActivity.NEW);
             startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 

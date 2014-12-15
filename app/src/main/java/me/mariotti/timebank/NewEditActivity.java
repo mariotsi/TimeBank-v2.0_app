@@ -19,17 +19,17 @@ import java.util.HashMap;
 
 public class NewEditActivity extends Activity {
 
-    public static final java.lang.String ACTION = "me.mariotti.timebank.NewEditActivity.ACTION";
+    public static final String ACTION = "me.mariotti.timebank.NewEditActivity.ACTION";
     public static final int NEW = 1;
     public static final int EDIT = 2;
-    private static final String LISTING_OBJECT = "me.mariotti.timebank.NewEditActivity.LISTING_OBJECT";
+    public static final String LISTING_OBJECT = "me.mariotti.timebank.NewEditActivity.LISTING_OBJECT";
     private int action;
     private Spinner categorySpinner;
     public ArrayAdapter<String> categorySpinnerAdapter;
     public ArrayList<String> categoryList;
     public ProgressDialog progress;
     public HashMap<String, Integer> categoryMap;
-    private EditText categoryText;
+    private EditText descriptionText;
     public Listing mListing;
 
     @Override
@@ -47,7 +47,7 @@ public class NewEditActivity extends Activity {
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner = (Spinner) findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
-        categoryText = (EditText) findViewById(R.id.description_editText);
+        descriptionText = (EditText) findViewById(R.id.description_editText);
         new CategoryWorker(this, RESTCaller.GET_CATEGORIES, null).execute();
         if (action == NEW) {
             setTitle("Create listing");
@@ -55,6 +55,7 @@ public class NewEditActivity extends Activity {
             setTitle("Edit listing");
             Bundle data = getIntent().getExtras();
             mListing = data.getParcelable(LISTING_OBJECT);
+
         }
     }
 
@@ -86,18 +87,33 @@ public class NewEditActivity extends Activity {
     }
 
     private void editListing() {
-    }
-
-    private void createListing() {
-        if (categoryText.getText().toString().length() > 0) {
+        if (descriptionText.getText().toString().length() > 0) {
             String categoryName = categorySpinner.getSelectedItem().toString();
             HashMap<String, Object> tempMap = new HashMap<>(1);
             Integer categoryId = categoryMap.get(categoryName);
             tempMap.put("category", categoryId);
-            tempMap.put("description", categoryText.getText().toString());
+            tempMap.put("description", descriptionText.getText().toString());
+            new ListingWorker(this, RESTCaller.EDIT_LISTING, tempMap, String.valueOf(mListing.id)).execute();
+        }
+    }
 
+    private void createListing() {
+        if (descriptionText.getText().toString().length() > 0) {
+            String categoryName = categorySpinner.getSelectedItem().toString();
+            HashMap<String, Object> tempMap = new HashMap<>(1);
+            Integer categoryId = categoryMap.get(categoryName);
+            tempMap.put("category", categoryId);
+            tempMap.put("description", descriptionText.getText().toString());
             new ListingWorker(this, RESTCaller.CREATE_LISTING, tempMap).execute();
         }
 
     }
+
+    public void updateUI() {
+        if (mListing != null) {
+            categorySpinner.setSelection(categoryList.indexOf(mListing.categoryName));
+            descriptionText.setText(mListing.description);
+        }
+    }
+
 }
