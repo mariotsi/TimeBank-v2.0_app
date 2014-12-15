@@ -14,12 +14,13 @@ import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
 import me.mariotti.timebank.classes.User;
+import me.mariotti.timebank.profile.ProfileActivity;
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends Activity {
-    public static final String LISTING_OBJECT = "me.mariotti.timebank.listing_object";
+
     private String[] values;
     private ListView mListView;
     private ArrayList<Listing> mList;
@@ -55,7 +56,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(parent.getContext(), ListingDetailActivity.class);
-                intent.putExtra(LISTING_OBJECT, mListingAdapter.getItem(position));
+                intent.putExtra(ListingDetailActivity.LISTING_OBJECT, mListingAdapter.getItem(position));
                 startActivity(intent);
             }
         });
@@ -77,6 +78,7 @@ public class MainActivity extends Activity {
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);
+        mOptionsMenu.findItem(R.id.menu__main_activity__profile).setIntent(new Intent(this,ProfileActivity.class));
         return true;
     }
 

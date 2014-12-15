@@ -28,9 +28,13 @@
             android:label="@string/title_activity_listing" >
         </activity>
         <activity
-            android:name="me.mariotti.timebank.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:label="@string/title_activity_profile" >
         </activity>
     </application>
 

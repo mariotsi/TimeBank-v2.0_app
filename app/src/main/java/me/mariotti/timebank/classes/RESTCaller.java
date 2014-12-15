@@ -16,6 +16,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     public static final int REQUEST_LISTING = 2;
     public static final int UNREQUEST_LISTING = 3;
     public static final int GET_SINGLE_LISTING = 4;
+    public static final int GET_MY_PROFILE = 5;
 
     public static final String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
     protected String mResourceUrl;

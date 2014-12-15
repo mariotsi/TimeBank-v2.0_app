@@ -22,5 +22,9 @@
     <string name="success_logged_out">You\'are now logged out</string>
     <string name="menu__profile">Profile</string>
     <string name="add">New listing</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_section1">My listings</string>
+    <string name="title_section2">Listings requested</string>
+
 
 </resources>

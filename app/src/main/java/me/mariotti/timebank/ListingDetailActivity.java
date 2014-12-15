@@ -11,9 +11,11 @@ import android.widget.*;
 import me.mariotti.timebank.RESTWorkers.ListingWorker;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.User;
+import me.mariotti.timebank.profile.ProfileActivity;
 
 
 public class ListingDetailActivity extends Activity {
+    public static final String LISTING_OBJECT = "me.mariotti.timebank.listing_object";
     private Button mRequestButton;
     private Menu mOptionsMenu;
     private Listing mListing;
@@ -26,7 +28,7 @@ public class ListingDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.single_listing_activity);
         Bundle data = getIntent().getExtras();
-        mListing = data.getParcelable(MainActivity.LISTING_OBJECT);
+        mListing = data.getParcelable(LISTING_OBJECT);
         ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
         ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName);
         ((TextView) findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
@@ -131,6 +133,7 @@ public class ListingDetailActivity extends Activity {
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);
+        mOptionsMenu.findItem(R.id.menu__listing_detail__profile).setIntent(new Intent(this,ProfileActivity.class));
         return true;
     }
 

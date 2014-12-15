@@ -127,7 +127,6 @@ public class ListingWorker extends RESTCaller {
                 } catch (JSONException e) {
                     Log.e("RESTCaller", e.getMessage());
                 } finally {
-
                     ((ListingDetailActivity) mActivity).progress.hide();
                     Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
                 }

@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="me.mariotti.timebank.profile.MyListings" android:orientation="vertical">
+
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/title_section1" android:id="@+id/fragmentTitle"
+                android:linksClickable="true" android:layout_margin="14dp"
+                android:drawableRight="@drawable/ic_right_arrow"
+                android:gravity="center_vertical|center_horizontal"/>
+    </LinearLayout>
+
+
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/my_listings_list_view" android:layout_gravity="center"
+            />
+
+</LinearLayout>
