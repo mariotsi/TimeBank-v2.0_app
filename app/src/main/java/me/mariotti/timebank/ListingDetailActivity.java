@@ -1,9 +1,10 @@
 package me.mariotti.timebank;
 
-import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,13 +12,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import me.mariotti.timebank.RESTWorkers.ListingWorker;
+import me.mariotti.timebank.classes.ConfirmDeleteListingDialog;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.RESTCaller;
 import me.mariotti.timebank.classes.User;
 import me.mariotti.timebank.profile.ProfileActivity;
 
 
-public class ListingDetailActivity extends Activity {
+public class ListingDetailActivity extends FragmentActivity implements ConfirmDeleteListingDialog.NoticeDialogListener{
     public static final String LISTING_OBJECT = "me.mariotti.timebank.listing_object";
     private Button mRequestButton;
     private Menu mOptionsMenu;
@@ -164,14 +166,27 @@ public class ListingDetailActivity extends Activity {
             intent.putExtra(NewEditActivity.ACTION, NewEditActivity.EDIT);
             startActivity(intent);
         }
+        if (id == R.id.menu__listing_detail__delete) {
+            showConfirmDelete();
+        }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    public void deleteListing(MenuItem item) {
     }
 
     public static void markListingsAsOutdated() {
         areListingsOutdated = true;
     }
+    public void showConfirmDelete() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new ConfirmDeleteListingDialog();
+        dialog.show(getFragmentManager(), "ConfirmDeleteListingDialog");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the ConfirmDeleteListingDialog.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        new ListingWorker(this, RESTCaller.DELETE_LISTING, String.valueOf(getListingId())).execute();
+    }
+
 }

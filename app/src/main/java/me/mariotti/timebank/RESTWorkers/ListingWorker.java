@@ -48,6 +48,7 @@ public class ListingWorker extends RESTCaller {
         switch (command) {
             case GET_LISTING_LIST:
                 mResourceUrl = "listings/";//TODO shuold be listings/search to omit requested listings
+                ((MainActivity) mActivity).progress.setMessage("Loading listings");
                 ((MainActivity) mActivity).progress.show();
                 mListingAdapter = ((MainActivity) this.mActivity).mListingAdapter;
                 mListingAdapter.clear();
@@ -55,15 +56,18 @@ public class ListingWorker extends RESTCaller {
             case REQUEST_LISTING:
                 mResourceUrl = "listings/" + params[0] + "/claim/";
                 HttpMethod = "PUT";
+                ((ListingDetailActivity) mActivity).progress.setMessage("Requesting listing");
                 ((ListingDetailActivity) mActivity).progress.show();
                 break;
             case UNREQUEST_LISTING:
                 mResourceUrl = "listings/" + params[0] + "/unclaim/";
                 HttpMethod = "DELETE";
+                ((ListingDetailActivity) mActivity).progress.setMessage("Unrequesting listing");
                 ((ListingDetailActivity) mActivity).progress.show();
                 break;
             case GET_SINGLE_LISTING:
                 mResourceUrl = "listings/" + params[0] + "/";
+                ((ListingDetailActivity) mActivity).progress.setMessage("Retrieving listing");
                 ((ListingDetailActivity) mActivity).progress.show();
                 break;
             case CREATE_LISTING:
@@ -81,6 +85,12 @@ public class ListingWorker extends RESTCaller {
                 mResourceUrl = "listings/" + params[0] + "/";
                 ((NewEditActivity) mActivity).progress.setMessage("Editing listing");
                 ((NewEditActivity) mActivity).progress.show();
+                break;
+            case DELETE_LISTING:
+                HttpMethod = "DELETE";
+                mResourceUrl = "listings/" + params[0] + "/";
+                ((ListingDetailActivity) mActivity).progress.setMessage("Deleting listing");
+                ((ListingDetailActivity) mActivity).progress.show();
                 break;
         }
     }
@@ -244,6 +254,32 @@ public class ListingWorker extends RESTCaller {
                     Log.e("RESTCaller", e.getMessage());
                 } finally {
                     ((NewEditActivity) mActivity).progress.hide();
+                    Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
+                    mActivity.finish();
+                }
+                break;
+            case DELETE_LISTING:
+                try {
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 410) {
+                        message = "Listing successfully deleted";
+                        MainActivity.markListingsAsOutdated();
+                    } else {
+                        switch (s.getInt("responseCode")) {
+                            case 404:
+                                message = "Listing not found";
+                                break;
+                            case 403:
+                                message = "You are not the owner";
+                                break;
+                            default:
+                                message = s.getString("errorMessage");
+                                break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.e("RESTCaller", e.getMessage());
+                } finally {
+                    ((ListingDetailActivity) mActivity).progress.hide();
                     Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
                     mActivity.finish();
                 }
