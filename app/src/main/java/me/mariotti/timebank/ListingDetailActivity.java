@@ -38,8 +38,8 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
         setContentView(R.layout.activity_listing_detail);
         Bundle data = getIntent().getExtras();
         mListing = data.getParcelable(LISTING_OBJECT);
-        mRequestedLabel = (TextView) findViewById(R.id.requested_label);
-        mRequestButton = (Button) findViewById(R.id.claimButton);
+        mRequestedLabel = (TextView) findViewById(R.id.listing_detail__requested_label);
+        mRequestButton = (Button) findViewById(R.id.listing_detail__request_button);
         mRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,10 +84,10 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
      */
     public void updateUI() {
         Log.i(TAG, "UpdateUI requested");
-        ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
+        ((TextView) findViewById(R.id.listing_detail__descriptionText)).setText(mListing.description);
         ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName);
-        ((TextView) findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
-        (mCheckBox = (CheckBox) findViewById(R.id.checkBox_requested)).setChecked(!mListing.requested);
+        ((TextView) findViewById(R.id.listing_detail__date_text)).setText(Listing.dateFormatter.format(mListing.dateCreation));
+        (mCheckBox = (CheckBox) findViewById(R.id.listing_detail__checkBox_requested)).setChecked(!mListing.requested);
         mApplicantNameLabel= (TextView) findViewById(R.id.listing_detail__applicant_name_label);
         mApplicantName = (TextView) findViewById(R.id.listing_detail__applicant_name);
         invalidateOptionsMenu();
@@ -95,10 +95,10 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
             MenuItem logInOut = mOptionsMenu.findItem(R.id.menu__listing_detail__log_in_out);
             Intent intent = (new Intent(this, LoginActivity.class));
             if (User.isLogged) {
-                logInOut.setTitle(R.string.log_out);
+                logInOut.setTitle(R.string.menu__log_out);
                 intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
             } else {
-                logInOut.setTitle(R.string.log_in);
+                logInOut.setTitle(R.string.menu__log_in);
                 intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
             }
             logInOut.setIntent(intent);
@@ -108,7 +108,7 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
             mCheckBox.setVisibility(View.VISIBLE);
             mCheckBox.setChecked(mListing.requested);
             mRequestedLabel.setVisibility(View.VISIBLE);
-            mApplicantNameLabel.setVisibility(mListing.requested?View.VISIBLE:View.GONE);
+            mApplicantNameLabel.setVisibility(mListing.requested ? View.VISIBLE : View.GONE);
             mApplicantName.setText(mListing.applicantName);
             mApplicantName.setVisibility(mListing.requested?View.VISIBLE:View.GONE);
         } else {
@@ -117,9 +117,9 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
             mCheckBox.setVisibility(View.INVISIBLE);
             mRequestedLabel.setVisibility(View.INVISIBLE);
             if (mListing.imTheApplicant()) {
-                mRequestButton.setText(getString(R.string.unrequest_text));
+                mRequestButton.setText(getString(R.string.listing_detail__unrequest_text));
             } else {
-                mRequestButton.setText(getString(R.string.request_text));
+                mRequestButton.setText(getString(R.string.listing_detail__request_text));
             }
         }
     }
@@ -150,10 +150,10 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
         MenuItem LogInOut = mOptionsMenu.findItem(R.id.menu__listing_detail__log_in_out);
         Intent intent = (new Intent(this, LoginActivity.class));
         if (User.isLogged) {
-            LogInOut.setTitle(R.string.log_out);
+            LogInOut.setTitle(R.string.menu__log_out);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
         } else {
-            LogInOut.setTitle(R.string.log_in);
+            LogInOut.setTitle(R.string.menu__log_in);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);

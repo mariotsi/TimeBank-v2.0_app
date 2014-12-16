@@ -46,6 +46,7 @@ public class ProfileActivity extends Activity {
     public ProgressDialog progress;
     public ArrayList<Listing> mListingsArray;
     private Menu mOptionsMenu;
+    //TODO add a section with my listings requested
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +64,8 @@ public class ProfileActivity extends Activity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        /*
-        All data is contained in this activity, the two fragmments only show it, and handle the click event
-         */
+
+        //All data is contained in this activity, the two fragmments only show it, and handle the click event
         mListingsArray = new ArrayList<>();
         mMyListingsArray = new ArrayList<>();
         mRequestedListingsArray = new ArrayList<>();
@@ -93,10 +93,10 @@ public class ProfileActivity extends Activity {
         MenuItem LogInOut = mOptionsMenu.findItem(R.id.menu__profile_activity__log_in_out);
         Intent intent = (new Intent(this, LoginActivity.class));
         if (User.isLogged) {
-            LogInOut.setTitle(R.string.log_out);
+            LogInOut.setTitle(R.string.menu__log_out);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
         } else {
-            LogInOut.setTitle(R.string.log_in);
+            LogInOut.setTitle(R.string.menu__log_in);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);
@@ -170,9 +170,9 @@ public class ProfileActivity extends Activity {
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return getString(R.string.title__section1).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
+                    return getString(R.string.title__section2).toUpperCase(l);
 
             }
             return null;

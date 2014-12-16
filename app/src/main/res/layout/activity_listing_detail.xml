@@ -8,70 +8,121 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               tools:context="me.mariotti.timebank.ListingDetailActivity">
+
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/descriptionText"
-            style="@style/AppTheme" android:editable="false" android:elevation="3dp"
-            android:elegantTextHeight="false" android:gravity="top|center_vertical|start"
-            android:theme="@style/AppTheme" android:layout_marginBottom="14dp" android:minHeight="30dp"/>
-    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
-                  android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
-                  android:layout_marginBottom="0dp" android:minHeight="30dp" android:gravity="center_vertical|start">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="@string/category_label"
-                  android:id="@+id/categoryLabel"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="categoryText"
+            android:id="@+id/listing_detail__descriptionText"
+            style="@style/AppTheme"
+            android:editable="false"
+            android:elevation="3dp"
+            android:elegantTextHeight="false"
+            android:gravity="top|center_vertical|start"
+            android:theme="@style/AppTheme"
+            android:layout_marginBottom="14dp"
+            android:minHeight="30dp"/>
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_horizontal"
+                  android:layout_marginBottom="0dp"
+                  android:minHeight="30dp"
+                  android:gravity="center_vertical|start">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/listing_detail__category_label"
+                  android:id="@+id/listing_detail__categoryLabel"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="categoryText"
                   android:id="@+id/categoryText"/>
+
     </LinearLayout>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="0dp" android:minHeight="30dp" android:gravity="center_vertical|start">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="0dp"
+            android:minHeight="30dp"
+            android:gravity="center_vertical|start">
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date_label"
-                android:id="@+id/dateLabel"/>
+                android:text="@string/listing_detail__date_label"
+                android:id="@+id/listing_detail__date_label"/>
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dateText"
-                android:id="@+id/dateText" android:gravity="right"/>
+                android:id="@+id/listing_detail__date_text"
+                android:gravity="right"/>
+
     </LinearLayout>
-    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginBottom="0dp" android:minHeight="30dp" android:gravity="center_vertical|start">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="@string/requested" android:id="@+id/requested_label" android:layout_weight="0"/>
-        <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:id="@+id/checkBox_requested" android:clickable="false" android:layout_weight="0"/>
+                  android:layout_marginBottom="0dp"
+                  android:minHeight="30dp"
+                  android:gravity="center_vertical|start">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/listing_detail__requested"
+                  android:id="@+id/listing_detail__requested_label"
+                  android:layout_weight="0"/>
+
+        <CheckBox android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/listing_detail__checkBox_requested"
+                  android:clickable="false"
+                  android:layout_weight="0"/>
+
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent" android:gravity="center_vertical|end">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/listing_detail__applicant" android:id="@+id/listing_detail__applicant_name_label"
-                      android:gravity="end" android:layout_weight="0"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="dateText"
-                      android:id="@+id/listing_detail__applicant_name" android:gravity="right" android:layout_weight="0"
-                    />
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical|end">
+
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/listing_detail__applicant"
+                      android:id="@+id/listing_detail__applicant_name_label"
+                      android:gravity="end"
+                      android:layout_weight="0"/>
+
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="dateText"
+                      android:id="@+id/listing_detail__applicant_name"
+                      android:gravity="right" android:layout_weight="0"/>
+
         </LinearLayout>
+
     </LinearLayout>
+
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom">
+
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/request_text"
-                android:id="@+id/claimButton" android:layout_gravity="center_horizontal"
-                />
+                android:text="@string/listing_detail__request_text"
+                android:id="@+id/listing_detail__request_button"
+                android:layout_gravity="center_horizontal"/>
+
     </LinearLayout>
 
 </LinearLayout>

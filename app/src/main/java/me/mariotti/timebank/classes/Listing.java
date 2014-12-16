@@ -25,7 +25,6 @@ public class Listing implements Parcelable {
     public int applicant;
     public String applicantName;
     public boolean requested;
-    // TODO add applicant name on server
 
 
     public Listing(JSONObject json) {

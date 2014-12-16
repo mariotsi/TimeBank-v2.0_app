@@ -50,7 +50,7 @@ public class ListingWorker extends RESTCaller {
     protected void onPreExecute() {
         switch (command) {
             case GET_LISTING_LIST:
-                mResourceUrl = "listings/";//TODO shuold be listings/search to omit requested listings
+                mResourceUrl = "listings/";
                 ((MainActivity) mActivity).progress.setMessage("Loading listings");
                 ((MainActivity) mActivity).progress.show();
                 break;
@@ -226,7 +226,7 @@ public class ListingWorker extends RESTCaller {
                 break;
             case CREATE_LISTING:
                 try {
-                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {
                         message = "Listing successfully created";
                         MainActivity.markListingsAsOutdated();
                     } else {
@@ -249,7 +249,7 @@ public class ListingWorker extends RESTCaller {
                 break;
             case EDIT_LISTING:
                 try {
-                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
+                    if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {
                         message = "Listing successfully edited";
                         MainActivity.markListingsAsOutdated();
                         //Force ListingDetailActivity to fetch updated version of listing just after I call finish()

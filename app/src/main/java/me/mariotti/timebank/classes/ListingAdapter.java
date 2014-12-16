@@ -38,12 +38,12 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
     @Override
     public View getView(int position, View mView, ViewGroup parent) {
         if (mView == null) {
-            mView = LayoutInflater.from(context).inflate(R.layout.row_item_main, null);
+            mView = LayoutInflater.from(context).inflate(R.layout.row_listing_item, null);
         }
         Listing mListing = getItem(position);
-        TextView description = (TextView) mView.findViewById(R.id.row_descriptionText);
-        TextView category = (TextView) mView.findViewById(R.id.row_categoryText);
-        TextView date = (TextView) mView.findViewById(R.id.row_dateText);
+        TextView description = (TextView) mView.findViewById(R.id.row_listing__description_text);
+        TextView category = (TextView) mView.findViewById(R.id.row_listing__category_text);
+        TextView date = (TextView) mView.findViewById(R.id.row_listing__date_text);
 
         description.setText(mListing.description.length() > 200 ? mListing.description.substring(0, 200) + "..." : mListing.description);
         category.setText(mListing.categoryName);

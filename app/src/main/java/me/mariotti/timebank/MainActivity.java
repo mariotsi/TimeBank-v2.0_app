@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mListView = (ListView) findViewById(R.id.listView);
+        mListView = (ListView) findViewById(R.id.main__listings_list_view);
         progress = new ProgressDialog(this);
         progress.setMessage("Loading listings");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
         provinceSpinner.setAdapter(provinceSpinnerAdapter);
         citySpinner = (Spinner) findViewById(R.id.main__city_spinner);
         citySpinner.setAdapter(citySpinnerAdapter);
-        descriptionSearch = (EditText) findViewById(R.id.description_search_editText);
+        descriptionSearch = (EditText) findViewById(R.id.main__description_search_editText);
         categoryLabel = (TextView) findViewById(R.id.main__search_category_label);
         provinceLabel = (TextView) findViewById(R.id.main__search_province_label);
         cityLabel = (TextView) findViewById(R.id.main__search_city_label);
@@ -136,10 +136,10 @@ public class MainActivity extends Activity {
         MenuItem LogInOut = mOptionsMenu.findItem(R.id.menu__main_activity__log_in_out);
         Intent intent = (new Intent(this, LoginActivity.class));
         if (User.isLogged) {
-            LogInOut.setTitle(R.string.log_out);
+            LogInOut.setTitle(R.string.menu__log_out);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
         } else {
-            LogInOut.setTitle(R.string.log_in);
+            LogInOut.setTitle(R.string.menu__log_in);
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);
@@ -194,10 +194,10 @@ public class MainActivity extends Activity {
             MenuItem LogInOut = mOptionsMenu.findItem(R.id.menu__main_activity__log_in_out);
             Intent intent = (new Intent(this, LoginActivity.class));
             if (User.isLogged) {
-                LogInOut.setTitle(R.string.log_out);
+                LogInOut.setTitle(R.string.menu__log_out);
                 intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGOUT);
             } else {
-                LogInOut.setTitle(R.string.log_in);
+                LogInOut.setTitle(R.string.menu__log_in);
                 intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
             }
             LogInOut.setIntent(intent);

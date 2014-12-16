@@ -3,17 +3,17 @@
       tools:context=".MainActivity">
 
     <item android:id="@+id/menu__profile_activity__refresh"
-          android:title="@string/action_refresh"
+          android:title="@string/menu__action_refresh"
           android:orderInCategory="3"
           android:icon="@drawable/ic_action_refresh"
           android:showAsAction="ifRoom"/>
     <item android:id="@+id/menu__profile_activity__log_in_out"
-          android:title="@string/log_in"
+          android:title="@string/menu__log_in"
           android:orderInCategory="100"
           android:icon="@drawable/ic_action_search"
           android:showAsAction="never"/>
     <item android:id="@+id/menu__profile_activity__new"
-          android:title="@string/add"
+          android:title="@string/menu__add"
           android:icon="@drawable/ic_action_new"
           android:orderInCategory="1"
           android:showAsAction="always"/>

@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -49,14 +47,14 @@ public class NewEditActivity extends Activity {
 
 
         //Initialize references to UI views
-        categorySpinner = (Spinner) findViewById(R.id.category_spinner);
+        categorySpinner = (Spinner) findViewById(R.id.new_edit__category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
-        descriptionText = (EditText) findViewById(R.id.description_editText);
+        descriptionText = (EditText) findViewById(R.id.new_edit__description_editText);
         new CategoryWorker(this, RESTCaller.GET_CATEGORIES).execute();
         if (action == NEW) {
-            setTitle("Create listing");
+            setTitle(getString(R.string.title__create_listing));
         } else if (action == EDIT) {
-            setTitle("Edit listing");
+            setTitle(getString(R.string.title__edit_listing));
             Bundle data = getIntent().getExtras();
             mListing = data.getParcelable(LISTING_OBJECT);
         }

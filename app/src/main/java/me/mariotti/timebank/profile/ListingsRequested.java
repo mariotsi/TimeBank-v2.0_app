@@ -69,7 +69,7 @@ public class ListingsRequested extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getView() != null) {
-            mListView = (ListView) getView().findViewById(R.id.requested_listings_list_view);
+            mListView = (ListView) getView().findViewById(R.id.requested_listings__list_view);
             mRequestedListingAdapter = ((ProfileActivity) getActivity()).mRequestedListingsAdapter;
             mListView.setAdapter(mRequestedListingAdapter);
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

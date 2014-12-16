@@ -70,7 +70,7 @@ public class MyListings extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getView() != null) {
-            mListView = (ListView) getView().findViewById(R.id.my_listings_list_view);
+            mListView = (ListView) getView().findViewById(R.id.my_listings__list_view);
             mMyListingAdapter = ((ProfileActivity) getActivity()).mMyListingsAdapter;
             mListView.setAdapter(mMyListingAdapter);
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -71,14 +71,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 e.printStackTrace();
             }
             finish();
-            Toast.makeText(getBaseContext(), getString(R.string.success_logged_out), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), getString(R.string.login__success_logged_out), Toast.LENGTH_SHORT).show();
             return;
         }
         // Set up the login form.
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.email);
+        mUsernameView = (AutoCompleteTextView) findViewById(R.id.login__email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.login__password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -90,7 +90,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = (Button) findViewById(R.id.login__email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,8 +98,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mLoginFormView = findViewById(R.id.login__login_form);
+        mProgressView = findViewById(R.id.login__login_progress);
     }
 
     private void populateAutoComplete() {
@@ -352,17 +352,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                         User.isLogged = false;
                         break;
                     case 401:
-                        mUsernameView.setError(getString(R.string.error_incorrect_username_or_password));
+                        mUsernameView.setError(getString(R.string.login__error_incorrect_username_or_password));
                         mUsernameView.requestFocus();
                         break;
                     default:
-                        Toast.makeText(getBaseContext(), getString(R.string.error_generic_error), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), getString(R.string.login__error_generic_error), Toast.LENGTH_LONG).show();
                         break;
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(getBaseContext(), getString(R.string.error_generic_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), getString(R.string.login__error_generic_error), Toast.LENGTH_LONG).show();
             }
         }
 

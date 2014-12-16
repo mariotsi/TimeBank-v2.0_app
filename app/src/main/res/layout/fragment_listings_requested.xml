@@ -2,21 +2,29 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="me.mariotti.timebank.profile.MyListings" android:orientation="vertical">
-    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+             tools:context="me.mariotti.timebank.profile.MyListings"
+             android:orientation="vertical">
+
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
                   android:orientation="horizontal">
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/title_section2" android:id="@+id/fragmentTitle"
-                android:linksClickable="true" android:layout_margin="14dp"
+                android:text="@string/title__section2"
+                android:id="@+id/requested_listings__fragment_title"
+                android:linksClickable="true"
+                android:layout_margin="14dp"
                 android:drawableLeft="@drawable/ic_left_arrow"
                 android:gravity="center_vertical|center_horizontal"/>
+
     </LinearLayout>
+
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/requested_listings_list_view" android:layout_gravity="center"
-            />
+            android:id="@+id/requested_listings__list_view"
+            android:layout_gravity="center"/>
+
 </LinearLayout>

@@ -2,7 +2,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="me.mariotti.timebank.NewEditActivity">
     <item android:id="@+id/menu__newedit_activity__save"
-          android:title="@string/save"
+          android:title="@string/menu__save"
           android:icon="@drawable/ic_action_save"
           android:orderInCategory="1"
           android:showAsAction="always"/>
