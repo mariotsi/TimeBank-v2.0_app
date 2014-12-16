@@ -15,46 +15,51 @@
             android:text="Medium Text"
             android:id="@+id/descriptionText"
             style="@style/AppTheme" android:editable="false" android:elevation="3dp"
-            android:elegantTextHeight="false" android:gravity="center_horizontal|top"
-            android:theme="@style/AppTheme"/>
+            android:elegantTextHeight="false" android:gravity="top|center_vertical|start"
+            android:theme="@style/AppTheme" android:layout_marginBottom="14dp" android:minHeight="30dp"/>
     <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
-                  android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+                  android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+                  android:layout_marginBottom="0dp" android:minHeight="30dp" android:gravity="center_vertical|start">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:text="@string/category_label"
                   android:id="@+id/categoryLabel"/>
-        <Space android:layout_width="20dp" android:layout_height="20dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="categoryText"
                   android:id="@+id/categoryText"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="0dp" android:minHeight="30dp" android:gravity="center_vertical|start">
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/date_label"
                 android:id="@+id/dateLabel"/>
-        <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                />
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dateText"
                 android:id="@+id/dateText" android:gravity="right"/>
     </LinearLayout>
-    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
-                  android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="0dp" android:minHeight="30dp" android:gravity="center_vertical|start">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="@string/requested" android:id="@+id/requested_label"/>
-        <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                />
+                  android:text="@string/requested" android:id="@+id/requested_label" android:layout_weight="0"/>
         <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:id="@+id/checkBox_requested" android:clickable="false"/>
+                  android:id="@+id/checkBox_requested" android:clickable="false" android:layout_weight="0"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" android:gravity="center_vertical|end">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/listing_detail__applicant" android:id="@+id/listing_detail__applicant_name_label"
+                      android:gravity="end" android:layout_weight="0"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="dateText"
+                      android:id="@+id/listing_detail__applicant_name" android:gravity="right" android:layout_weight="0"
+                    />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
             android:orientation="vertical"

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 
 public class MainActivity extends Activity {
 
-    private String[] values;
+    private static final String TAG = "MainActivity";
     private ListView mListView;
     private ArrayList<Listing> mList;
     public ListingAdapter mListingAdapter;
@@ -38,31 +39,21 @@ public class MainActivity extends Activity {
     public ArrayAdapter<Category> categorySpinnerAdapter;
     public ArrayAdapter<String> provinceSpinnerAdapter;
     public ArrayAdapter<City> citySpinnerAdapter;
-    private Spinner provinceSpinner;
-    private Spinner citySpinner;
-    private Spinner categorySpinner;
+    private Spinner provinceSpinner, categorySpinner;
+    public Spinner citySpinner;
     private boolean searchPanelIsVisible = false;
+    private TextView categoryLabel, provinceLabel, cityLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.activity_main);
         mListView = (ListView) findViewById(R.id.listView);
         progress = new ProgressDialog(this);
         progress.setMessage("Loading listings");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
-        //mList = new ArrayList<String>();
-        mList = new ArrayList<Listing>();
-        /*
-        values = new String[]{"Android", "iPhone", "WindowsMobile",
-                              "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                              "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                              "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                              "Android", "iPhone", "WindowsMobile"};
-        */
-        values = new String[]{"No listings available"};
-        //Collections.addAll(mList, values);
+        mList = new ArrayList<>();
         mListingAdapter = new ListingAdapter(this, 0, mList);
         mListView.setAdapter(mListingAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,43 +64,48 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+
         //Search UI
         categoryMap = new HashMap<>();//maintain link between name and id
         categoryList = new ArrayList<>();
         categorySpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-
         provinceList = new ArrayList<>();
         provinceSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, provinceList);
         provinceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         cityList = new ArrayList<>();
-        cityList.add(new City("City"));
-        cityList.add(new City("Select a province first"));
+        cityList.add(new City("Select province"));
         citySpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cityList);
         citySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         //Initialize references to UI views
-        categorySpinner = (Spinner) findViewById(R.id.main_category_spinner);
+        categorySpinner = (Spinner) findViewById(R.id.main__category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
-        provinceSpinner = (Spinner) findViewById(R.id.main_province_spinner);
+        provinceSpinner = (Spinner) findViewById(R.id.main__province_spinner);
         provinceSpinner.setAdapter(provinceSpinnerAdapter);
-        citySpinner = (Spinner) findViewById(R.id.main_city_spinner);
+        citySpinner = (Spinner) findViewById(R.id.main__city_spinner);
         citySpinner.setAdapter(citySpinnerAdapter);
         descriptionSearch = (EditText) findViewById(R.id.description_search_editText);
+        categoryLabel = (TextView) findViewById(R.id.main__search_category_label);
+        provinceLabel = (TextView) findViewById(R.id.main__search_province_label);
+        cityLabel = (TextView) findViewById(R.id.main__search_city_label);
 
         //Hide all search UI
         citySpinner.setVisibility(View.GONE);
         categorySpinner.setVisibility(View.GONE);
         provinceSpinner.setVisibility(View.GONE);
         descriptionSearch.setVisibility(View.GONE);
+        categoryLabel.setVisibility(View.GONE);
+        provinceLabel.setVisibility(View.GONE);
+        cityLabel.setVisibility(View.GONE);
 
         initializeListeners();
 
         new CategoryWorker(this, RESTCaller.GET_CATEGORIES_FOR_SEARCH).execute();
         new CityWorker(this, RESTCaller.GET_PROVINCES).execute();
-        refreshListings();
+        progress.show();
     }
 
     private void initializeListeners() {
@@ -152,11 +148,17 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        progress.dismiss();
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem profile = mOptionsMenu.findItem(R.id.menu__main_activity__profile);
         MenuItem add = mOptionsMenu.findItem(R.id.menu__main_activity__new);
         MenuItem searchButton = mOptionsMenu.findItem(R.id.menu__main_activity__search);
-        searchButton.setIcon(searchPanelIsVisible?R.drawable.ic_action_close_search:R.drawable.ic_action_search);
+        searchButton.setIcon(searchPanelIsVisible ? R.drawable.ic_action_close_search : R.drawable.ic_action_search);
         if (User.isLogged) {
             profile.setVisible(true);
             add.setVisible(true);
@@ -228,11 +230,17 @@ public class MainActivity extends Activity {
             categorySpinner.setVisibility(View.GONE);
             provinceSpinner.setVisibility(View.GONE);
             descriptionSearch.setVisibility(View.GONE);
+            categoryLabel.setVisibility(View.GONE);
+            provinceLabel.setVisibility(View.GONE);
+            cityLabel.setVisibility(View.GONE);
         } else {
             citySpinner.setVisibility(View.VISIBLE);
             categorySpinner.setVisibility(View.VISIBLE);
             provinceSpinner.setVisibility(View.VISIBLE);
             descriptionSearch.setVisibility(View.VISIBLE);
+            categoryLabel.setVisibility(View.VISIBLE);
+            provinceLabel.setVisibility(View.VISIBLE);
+            cityLabel.setVisibility(View.VISIBLE);
         }
         invalidateOptionsMenu();
         searchPanelIsVisible = !searchPanelIsVisible;
@@ -248,7 +256,7 @@ public class MainActivity extends Activity {
             int city = ((City) citySpinner.getSelectedItem()).id;
             if (description.length() > 0) {
                 data.put("description", description);
-                if (description.equals("TUTTI")){
+                if (description.equals("TUTTI")) {
                     new ListingWorker(this, RESTCaller.GET_LISTING_LIST).execute();
                     return;
                 }
@@ -262,6 +270,7 @@ public class MainActivity extends Activity {
             if (city > -1) {
                 data.put("city", city);
             }
+            Log.i(TAG, "Search parameters: " + data.toString());
             new ListingWorker(this, RESTCaller.SEARCH_LISTINGS, data).execute();
         }
     }
@@ -274,8 +283,14 @@ public class MainActivity extends Activity {
     class SpinnerListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if (adapterView.getId() == R.id.main_province_spinner && !((TextView) view).getText().toString().equals("All")) {
+            if (adapterView.getId() == R.id.main__province_spinner && !((TextView) view).getText().toString().equals("All")) {
                 updateCities(((TextView) view).getText().toString());
+            } else if (adapterView.getId() == R.id.main__province_spinner && ((TextView) view).getText().toString().equals("All")) {
+                cityList.clear();
+                cityList.add(new City("Select province"));
+                citySpinner.setEnabled(false);
+                citySpinner.setSelection(0);
+                citySpinnerAdapter.notifyDataSetChanged();
             }
             refreshSearchResults();
         }

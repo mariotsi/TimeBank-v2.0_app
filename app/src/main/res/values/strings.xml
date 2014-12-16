@@ -8,11 +8,12 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_search">Search</string>
     <string name="title_activity_listing">Listing detail</string>
-    <string name="requested">Requested:</string>
+    <string name="requested">Requested:\u0020</string>
+    <string name="listing_detail__applicant">Applicant:\u0020</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="date_label">Published on:</string>
-    <string name="category_label">Category:</string>
+    <string name="date_label">Published on:\u0020</string>
+    <string name="category_label">Category:\u0020</string>
     <string name="request_text">Request</string>
     <string name="unrequest_text">Unrequest</string>
     <string name="log_in">Login</string>
@@ -28,5 +29,8 @@
     <string name="title_activity_new_edit">NewEditActivity</string>
     <string name="description_label">Description</string>
     <string name="save">Save</string>
+    <string name="main__search_category_label">Category</string>
+    <string name="main__search_province_label">Province</string>
+    <string name="main__search_city_label">City</string>
 
 </resources>

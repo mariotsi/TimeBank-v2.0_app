@@ -174,9 +174,10 @@ public class ListingWorker extends RESTCaller {
                 try {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 410) {
                         message = "Listing successfully unrequested";
-                        JSONObject body = s.getJSONObject("responseBody");
-                        ((NewEditActivity) mActivity).mListing = new Listing(body);
-                        ((NewEditActivity) mActivity).updateUI();
+                        //update the listing stored in the Activity with the updated version from server, then updateUI
+                        //and force Listings Refresh next time the Main Activity is shown
+                        new ListingWorker(mActivity, ListingWorker.GET_SINGLE_LISTING, String.valueOf(((ListingDetailActivity) mActivity).getListingId())).execute();
+                        ((ListingDetailActivity) mActivity).updateUI();
                         MainActivity.markListingsAsOutdated();
                     } else {
                         switch (s.getInt("responseCode")) {
@@ -325,6 +326,9 @@ public class ListingWorker extends RESTCaller {
                 } catch (JSONException e) {
                     Log.e("RESTCaller", e.getMessage());
                 } finally {
+                    if (((MainActivity) this.mActivity).progress.isShowing()){
+                        ((MainActivity) this.mActivity).progress.dismiss();
+                    }
                     mListingAdapter.notifyDataSetChanged();
                 }
                 break;

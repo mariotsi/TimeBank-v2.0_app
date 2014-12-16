@@ -121,6 +121,11 @@ public class NewEditActivity extends Activity {
             descriptionText.setText(mListing.description);
         }
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        progress.dismiss();
+    }
 
 
 

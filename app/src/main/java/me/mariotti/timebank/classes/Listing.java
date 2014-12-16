@@ -65,6 +65,7 @@ public class Listing implements Parcelable {
             dateCreation = dateParser.parse(mBundle.getString("dateCreation"));
             owner = mBundle.getInt("owner");
             applicant = mBundle.getInt("applicant");
+            applicantName = mBundle.getString("applicantName");
             requested = mBundle.getBoolean("requested");
         } catch (ParseException e) {
             e.printStackTrace();
@@ -88,6 +89,7 @@ public class Listing implements Parcelable {
         mBundle.putString("dateCreation", dateParser.format(dateCreation));
         mBundle.putInt("owner", owner);
         mBundle.putInt("applicant", applicant);
+        mBundle.putString("applicantName", applicantName);
         mBundle.putBoolean("requested", requested);
         parcel.writeBundle(mBundle);
 

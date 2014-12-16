@@ -5,7 +5,7 @@
           android:title="@string/menu__profile"
           android:icon="@drawable/ic_action_profile"
           android:orderInCategory="98"
-          android:showAsAction="ifRoom"/>
+          android:showAsAction="never"/>
     <item android:id="@+id/menu__listing_detail__edit"
           android:title="@string/edit"
           android:icon="@drawable/ic_action_edit"

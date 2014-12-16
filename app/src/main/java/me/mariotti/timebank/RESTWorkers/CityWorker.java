@@ -5,7 +5,6 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import me.mariotti.timebank.MainActivity;
-import me.mariotti.timebank.MainActivity;
 import me.mariotti.timebank.classes.City;
 import me.mariotti.timebank.classes.RESTCaller;
 import org.json.JSONArray;
@@ -15,7 +14,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CityWorker extends RESTCaller{
+public class CityWorker extends RESTCaller {
 
     public CityWorker(Activity mActivity, int command, String... params) {
         super(mActivity, command, null, params);
@@ -25,9 +24,9 @@ public class CityWorker extends RESTCaller{
         switch (command) {
             case GET_PROVINCES:
                 mResourceUrl = "cities/provinces/";
-                                break;
+                break;
             case GET_CITIES_BY_PROVINCE:
-                mResourceUrl = "cities/get_cities_by_province/?province="+params[0];
+                mResourceUrl = "cities/get_cities_by_province/?province=" + params[0];
                 break;
         }
     }
@@ -48,7 +47,7 @@ public class CityWorker extends RESTCaller{
                             provinceList.add(body.get(i).toString());
                         }
                         Collections.sort(provinceList);
-                        provinceList.add(0,"All");
+                        provinceList.add(0, "All");
                         provinceSpinnerAdapter.notifyDataSetChanged();
                     } else {
                         switch (s.getInt("responseCode")) {
@@ -80,7 +79,8 @@ public class CityWorker extends RESTCaller{
                             cityList.add(tempCity);
                         }
                         Collections.sort(cityList);
-                        cityList.add(0,new City("All"));
+                        cityList.add(0, new City("All"));
+                        ((MainActivity) this.mActivity).citySpinner.setEnabled(true);
                         citySpinnerAdapter.notifyDataSetChanged();
                     } else {
                         switch (s.getInt("responseCode")) {

@@ -20,7 +20,7 @@ import me.mariotti.timebank.classes.User;
 import me.mariotti.timebank.profile.ProfileActivity;
 
 
-public class ListingDetailActivity extends FragmentActivity implements ConfirmDeleteListingDialog.NoticeDialogListener{
+public class ListingDetailActivity extends FragmentActivity implements ConfirmDeleteListingDialog.NoticeDialogListener {
     public static final String LISTING_OBJECT = "me.mariotti.timebank.listing_object";
     private static final String TAG = "ListingDetailActivity";
     private Button mRequestButton;
@@ -30,11 +30,12 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
     private TextView mRequestedLabel;
     public ProgressDialog progress;
     private static boolean areListingsOutdated = false;
+    private TextView mApplicantNameLabel,mApplicantName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.single_listing_activity);
+        setContentView(R.layout.activity_listing_detail);
         Bundle data = getIntent().getExtras();
         mListing = data.getParcelable(LISTING_OBJECT);
         mRequestedLabel = (TextView) findViewById(R.id.requested_label);
@@ -49,7 +50,6 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
         progress.setMessage("Loading listings");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
-
     }
 
     private void handleClickEvent() {
@@ -58,7 +58,6 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
         } else {
             new ListingWorker(this, ListingWorker.REQUEST_LISTING, String.valueOf(mListing.id)).execute();
         }
-
     }
 
     @Override
@@ -84,11 +83,13 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
      * and requested state
      */
     public void updateUI() {
-        Log.i(TAG,"UpdateUI requested");
+        Log.i(TAG, "UpdateUI requested");
         ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
         ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName);
         ((TextView) findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
         (mCheckBox = (CheckBox) findViewById(R.id.checkBox_requested)).setChecked(!mListing.requested);
+        mApplicantNameLabel= (TextView) findViewById(R.id.listing_detail__applicant_name_label);
+        mApplicantName = (TextView) findViewById(R.id.listing_detail__applicant_name);
         invalidateOptionsMenu();
         if (mOptionsMenu != null) {
             MenuItem logInOut = mOptionsMenu.findItem(R.id.menu__listing_detail__log_in_out);
@@ -107,7 +108,12 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
             mCheckBox.setVisibility(View.VISIBLE);
             mCheckBox.setChecked(mListing.requested);
             mRequestedLabel.setVisibility(View.VISIBLE);
+            mApplicantNameLabel.setVisibility(mListing.requested?View.VISIBLE:View.GONE);
+            mApplicantName.setText(mListing.applicantName);
+            mApplicantName.setVisibility(mListing.requested?View.VISIBLE:View.GONE);
         } else {
+            mApplicantNameLabel.setVisibility(View.GONE);
+            mApplicantName.setVisibility(View.GONE);
             mCheckBox.setVisibility(View.INVISIBLE);
             mRequestedLabel.setVisibility(View.INVISIBLE);
             if (mListing.imTheApplicant()) {
@@ -191,6 +197,12 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         new ListingWorker(this, RESTCaller.DELETE_LISTING, String.valueOf(getListingId())).execute();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        progress.dismiss();
     }
 
 }
