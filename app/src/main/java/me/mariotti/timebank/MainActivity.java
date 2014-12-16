@@ -4,19 +4,20 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.*;
+import me.mariotti.timebank.RESTWorkers.CategoryWorker;
+import me.mariotti.timebank.RESTWorkers.CityWorker;
 import me.mariotti.timebank.RESTWorkers.ListingWorker;
-import me.mariotti.timebank.classes.Listing;
-import me.mariotti.timebank.classes.ListingAdapter;
-import me.mariotti.timebank.classes.RESTCaller;
-import me.mariotti.timebank.classes.User;
+import me.mariotti.timebank.classes.*;
 import me.mariotti.timebank.profile.ProfileActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainActivity extends Activity {
@@ -29,6 +30,18 @@ public class MainActivity extends Activity {
     public static User loggedUser = null;
     private Menu mOptionsMenu;
     private static boolean areListingsOutdated = true;
+    public HashMap<String, Integer> categoryMap;
+    public EditText descriptionSearch;
+    public ArrayList<Category> categoryList;
+    public ArrayList<String> provinceList;
+    public ArrayList<City> cityList;
+    public ArrayAdapter<Category> categorySpinnerAdapter;
+    public ArrayAdapter<String> provinceSpinnerAdapter;
+    public ArrayAdapter<City> citySpinnerAdapter;
+    private Spinner provinceSpinner;
+    private Spinner citySpinner;
+    private Spinner categorySpinner;
+    private boolean searchPanelIsVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +73,63 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+        //Search UI
+        categoryMap = new HashMap<>();//maintain link between name and id
+        categoryList = new ArrayList<>();
+        categorySpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
+        categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+        provinceList = new ArrayList<>();
+        provinceSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, provinceList);
+        provinceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        cityList = new ArrayList<>();
+        cityList.add(new City("City"));
+        cityList.add(new City("Select a province first"));
+        citySpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cityList);
+        citySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //Initialize references to UI views
+        categorySpinner = (Spinner) findViewById(R.id.main_category_spinner);
+        categorySpinner.setAdapter(categorySpinnerAdapter);
+        provinceSpinner = (Spinner) findViewById(R.id.main_province_spinner);
+        provinceSpinner.setAdapter(provinceSpinnerAdapter);
+        citySpinner = (Spinner) findViewById(R.id.main_city_spinner);
+        citySpinner.setAdapter(citySpinnerAdapter);
+        descriptionSearch = (EditText) findViewById(R.id.description_search_editText);
+
+        //Hide all search UI
+        citySpinner.setVisibility(View.GONE);
+        categorySpinner.setVisibility(View.GONE);
+        provinceSpinner.setVisibility(View.GONE);
+        descriptionSearch.setVisibility(View.GONE);
+
+        initializeListeners();
+
+        new CategoryWorker(this, RESTCaller.GET_CATEGORIES_FOR_SEARCH).execute();
+        new CityWorker(this, RESTCaller.GET_PROVINCES).execute();
         refreshListings();
+    }
+
+    private void initializeListeners() {
+        descriptionSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                refreshSearchResults();
+            }
+        });
+        categorySpinner.setOnItemSelectedListener(new SpinnerListener());
+        provinceSpinner.setOnItemSelectedListener(new SpinnerListener());
+        citySpinner.setOnItemSelectedListener(new SpinnerListener());
     }
 
     @Override
@@ -86,6 +155,8 @@ public class MainActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem profile = mOptionsMenu.findItem(R.id.menu__main_activity__profile);
         MenuItem add = mOptionsMenu.findItem(R.id.menu__main_activity__new);
+        MenuItem searchButton = mOptionsMenu.findItem(R.id.menu__main_activity__search);
+        searchButton.setIcon(searchPanelIsVisible?R.drawable.ic_action_close_search:R.drawable.ic_action_search);
         if (User.isLogged) {
             profile.setVisible(true);
             add.setVisible(true);
@@ -136,7 +207,11 @@ public class MainActivity extends Activity {
     }
 
     public void refreshListings() {
-        new ListingWorker(this, RESTCaller.GET_LISTING_LIST).execute();
+        if (searchPanelIsVisible) {
+            refreshSearchResults();
+        } else {
+            new ListingWorker(this, RESTCaller.SEARCH_LISTINGS).execute();
+        }
     }
 
     public void refresh(MenuItem item) {
@@ -145,5 +220,68 @@ public class MainActivity extends Activity {
 
     public static void markListingsAsOutdated() {
         areListingsOutdated = true;
+    }
+
+    public void toggleSearch(MenuItem item) {
+        if (searchPanelIsVisible) {
+            citySpinner.setVisibility(View.GONE);
+            categorySpinner.setVisibility(View.GONE);
+            provinceSpinner.setVisibility(View.GONE);
+            descriptionSearch.setVisibility(View.GONE);
+        } else {
+            citySpinner.setVisibility(View.VISIBLE);
+            categorySpinner.setVisibility(View.VISIBLE);
+            provinceSpinner.setVisibility(View.VISIBLE);
+            descriptionSearch.setVisibility(View.VISIBLE);
+        }
+        invalidateOptionsMenu();
+        searchPanelIsVisible = !searchPanelIsVisible;
+    }
+
+    private void refreshSearchResults() {
+        if (searchPanelIsVisible) {
+            HashMap<String, Object> data = new HashMap<>(4);
+            String description = descriptionSearch.getText().toString();
+
+            int category = categorySpinner.getCount() > 0 ? ((Category) categorySpinner.getSelectedItem()).category_id : -1;
+            String province = provinceSpinner.getCount() > 0 ? provinceSpinner.getSelectedItem().toString() : "All";
+            int city = ((City) citySpinner.getSelectedItem()).id;
+            if (description.length() > 0) {
+                data.put("description", description);
+                if (description.equals("TUTTI")){
+                    new ListingWorker(this, RESTCaller.GET_LISTING_LIST).execute();
+                    return;
+                }
+            }
+            if (category > -1) {
+                data.put("category", category);
+            }
+            if (!province.equals("All")) {
+                data.put("province", province);
+            }
+            if (city > -1) {
+                data.put("city", city);
+            }
+            new ListingWorker(this, RESTCaller.SEARCH_LISTINGS, data).execute();
+        }
+    }
+
+    private void updateCities(String province) {
+        new CityWorker(this, RESTCaller.GET_CITIES_BY_PROVINCE, province).execute();
+        citySpinner.setSelection(0);
+    }
+
+    class SpinnerListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            if (adapterView.getId() == R.id.main_province_spinner && !((TextView) view).getText().toString().equals("All")) {
+                updateCities(((TextView) view).getText().toString());
+            }
+            refreshSearchResults();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
     }
 }

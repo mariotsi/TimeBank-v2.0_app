@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -46,12 +48,12 @@ public class NewEditActivity extends Activity {
         categorySpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+
         //Initialize references to UI views
         categorySpinner = (Spinner) findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
         descriptionText = (EditText) findViewById(R.id.description_editText);
-
-        new CategoryWorker(this, RESTCaller.GET_CATEGORIES, null).execute();
+        new CategoryWorker(this, RESTCaller.GET_CATEGORIES).execute();
         if (action == NEW) {
             setTitle("Create listing");
         } else if (action == EDIT) {
@@ -119,5 +121,7 @@ public class NewEditActivity extends Activity {
             descriptionText.setText(mListing.description);
         }
     }
+
+
 
 }

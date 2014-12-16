@@ -53,7 +53,11 @@ public class JsonUtils {
                 response.put("errorMessage", responseMessage);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            if (serverResponseMessage.length()==0) {
+                Log.i(TAG, "Empty body response");
+            }else{
+                Log.i(TAG, "JSONException" );
+            }
         }
         return response;
     }

@@ -13,8 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class ListingWorker extends RESTCaller {
@@ -50,8 +53,6 @@ public class ListingWorker extends RESTCaller {
                 mResourceUrl = "listings/";//TODO shuold be listings/search to omit requested listings
                 ((MainActivity) mActivity).progress.setMessage("Loading listings");
                 ((MainActivity) mActivity).progress.show();
-                mListingAdapter = ((MainActivity) this.mActivity).mListingAdapter;
-                mListingAdapter.clear();
                 break;
             case REQUEST_LISTING:
                 mResourceUrl = "listings/" + params[0] + "/claim/";
@@ -92,6 +93,23 @@ public class ListingWorker extends RESTCaller {
                 ((ListingDetailActivity) mActivity).progress.setMessage("Deleting listing");
                 ((ListingDetailActivity) mActivity).progress.show();
                 break;
+            case SEARCH_LISTINGS:
+                doInput = true;
+                StringBuilder postData = new StringBuilder();
+                if (outDataMap != null) {
+                    try {
+                        for (Map.Entry<String, Object> param : outDataMap.entrySet()) {
+                            if (postData.length() != 0) postData.append('&');
+                            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                            postData.append('=');
+                            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                mResourceUrl = "listings/search/?" + postData;
+                break;
         }
     }
 
@@ -100,10 +118,12 @@ public class ListingWorker extends RESTCaller {
         String message = "Generic Error";
         switch (command) {
             case GET_LISTING_LIST:
+                mListingAdapter = ((MainActivity) this.mActivity).mListingAdapter;
                 try {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {
                         JSONArray body = s.getJSONArray("responseBody");
-                        ArrayList<Listing> listingsArray = new ArrayList<Listing>();
+                        ArrayList<Listing> listingsArray = new ArrayList<>();
+                        mListingAdapter.clear();
                         for (int i = 0; i < body.length(); i++) {
                             listingsArray.add(new Listing(body.getJSONObject(i)));
                             mListingAdapter.add(listingsArray.get(i));
@@ -282,6 +302,30 @@ public class ListingWorker extends RESTCaller {
                     ((ListingDetailActivity) mActivity).progress.hide();
                     Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
                     mActivity.finish();
+                }
+                break;
+            case SEARCH_LISTINGS:
+                mListingAdapter = ((MainActivity) this.mActivity).mListingAdapter;
+                responseCode=0;
+                try {
+                    if (!s.getBoolean("hasErrors") && (responseCode=s.getInt("responseCode")) == 200) {
+                        JSONArray body = s.getJSONArray("responseBody");
+                        ArrayList<Listing> listingsArray = new ArrayList<>();
+
+                        mListingAdapter.clear();
+                        for (int i = 0; i < body.length(); i++) {
+                            listingsArray.add(new Listing(body.getJSONObject(i)));
+                            mListingAdapter.add(listingsArray.get(i));
+                        }
+                    } else if (responseCode==204){
+                        mListingAdapter.clear();
+                    } else {
+                        Toast.makeText(mActivity.getBaseContext(), s.getString("errorMessage"), Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    Log.e("RESTCaller", e.getMessage());
+                } finally {
+                    mListingAdapter.notifyDataSetChanged();
                 }
                 break;
         }

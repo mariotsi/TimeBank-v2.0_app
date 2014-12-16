@@ -27,9 +27,13 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     public static final int CREATE_LISTING = 7;
     public static final int EDIT_LISTING = 8;
     public static final int DELETE_LISTING = 9;
+    public static final int GET_CATEGORIES_FOR_SEARCH = 10;
+    public static final int GET_PROVINCES = 11;
+    public static final int GET_CITIES_BY_PROVINCE = 12;
+    public static final int SEARCH_LISTINGS = 13;
 
     public static final String mServerUrl = "https://agile-headland-8492.herokuapp.com/";
-    private final HashMap<String, Object> outDataMap;
+    protected final HashMap<String, Object> outDataMap;
     protected String mResourceUrl;
     final String TAG = "RESTCaller";
     protected Activity mActivity;

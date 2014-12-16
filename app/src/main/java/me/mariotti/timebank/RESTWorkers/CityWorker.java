@@ -5,8 +5,8 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import me.mariotti.timebank.MainActivity;
-import me.mariotti.timebank.NewEditActivity;
-import me.mariotti.timebank.classes.Category;
+import me.mariotti.timebank.MainActivity;
+import me.mariotti.timebank.classes.City;
 import me.mariotti.timebank.classes.RESTCaller;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,23 +14,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
-public class CategoryWorker extends RESTCaller {
+public class CityWorker extends RESTCaller{
 
-    public CategoryWorker(Activity mActivity, int command, String... params) {
+    public CityWorker(Activity mActivity, int command, String... params) {
         super(mActivity, command, null, params);
     }
 
     protected void onPreExecute() {
         switch (command) {
-            case GET_CATEGORIES:
-                mResourceUrl = "categories/";
-                ((NewEditActivity) mActivity).progress.setMessage("Loading categories list");
-                ((NewEditActivity) mActivity).progress.show();
-                break;
-            case GET_CATEGORIES_FOR_SEARCH:
-                mResourceUrl = "categories/";
+            case GET_PROVINCES:
+                mResourceUrl = "cities/provinces/";
+                                break;
+            case GET_CITIES_BY_PROVINCE:
+                mResourceUrl = "cities/get_cities_by_province/?province="+params[0];
                 break;
         }
     }
@@ -39,27 +36,20 @@ public class CategoryWorker extends RESTCaller {
     protected void onPostExecute(JSONObject s) {
         String message = "Generic Error";
         switch (command) {
-            case GET_CATEGORIES:
+            case GET_PROVINCES:
                 int responseCode = 0;
                 try {
                     if (!s.getBoolean("hasErrors") && (responseCode = s.getInt("responseCode")) == 200) {
                         //Initialize reference to Activity fields
-                        ArrayAdapter categorySpinnerAdapter = ((NewEditActivity) this.mActivity).categorySpinnerAdapter;
-                        HashMap<String, Integer> categoryMap = ((NewEditActivity) this.mActivity).categoryMap;
-                        ArrayList<String> categoryList = ((NewEditActivity) this.mActivity).categoryList;
+                        ArrayAdapter provinceSpinnerAdapter = ((MainActivity) this.mActivity).provinceSpinnerAdapter;
+                        ArrayList<String> provinceList = ((MainActivity) this.mActivity).provinceList;
                         JSONArray body = s.getJSONArray("responseBody");
-                        categoryList.clear();
-                        String tempName;
-                        int tempId;
                         for (int i = 0; i < body.length(); i++) {
-                            tempId = body.getJSONObject(i).getInt("category_id");
-                            tempName = body.getJSONObject(i).getString("name");
-                            //this is used to retrieve category id based on the name selected on the spinner
-                            categoryMap.put(tempName, tempId);
-                            categoryList.add(tempName);
+                            provinceList.add(body.get(i).toString());
                         }
-                        Collections.sort(categoryList);
-                        categorySpinnerAdapter.notifyDataSetChanged();
+                        Collections.sort(provinceList);
+                        provinceList.add(0,"All");
+                        provinceSpinnerAdapter.notifyDataSetChanged();
                     } else {
                         switch (s.getInt("responseCode")) {
                             default:
@@ -72,30 +62,26 @@ public class CategoryWorker extends RESTCaller {
                 } finally {
                     if (responseCode != 200)
                         Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
-                    ((NewEditActivity) mActivity).progress.dismiss();
-                    ((NewEditActivity) mActivity).updateUI();
+
                 }
                 break;
-            case GET_CATEGORIES_FOR_SEARCH:
-               responseCode = 0;
+            case GET_CITIES_BY_PROVINCE:
+                responseCode = 0;
                 try {
                     if (!s.getBoolean("hasErrors") && (responseCode = s.getInt("responseCode")) == 200) {
                         //Initialize reference to Activity fields
-                        ArrayAdapter categorySpinnerAdapter = ((MainActivity) this.mActivity).categorySpinnerAdapter;
-                        //HashMap<String, Integer> categoryMap = ((MainActivity) this.mActivity).categoryMap;
-                        ArrayList<Category> categoryList = ((MainActivity) this.mActivity).categoryList;
+                        ArrayAdapter citySpinnerAdapter = ((MainActivity) this.mActivity).citySpinnerAdapter;
+                        ArrayList<City> cityList = ((MainActivity) this.mActivity).cityList;
                         JSONArray body = s.getJSONArray("responseBody");
-                        categoryList.clear();
-                        Category tempCategory;
-                        int tempId;
+                        cityList.clear();
+                        City tempCity;
                         for (int i = 0; i < body.length(); i++) {
-                            tempCategory=new Category(body.getJSONObject(i));
-
-                            categoryList.add(tempCategory);
+                            tempCity = new City(body.getJSONArray(i));
+                            cityList.add(tempCity);
                         }
-                        Collections.sort(categoryList);
-                        categoryList.add(0,new Category("All"));
-                        categorySpinnerAdapter.notifyDataSetChanged();
+                        Collections.sort(cityList);
+                        cityList.add(0,new City("All"));
+                        citySpinnerAdapter.notifyDataSetChanged();
                     } else {
                         switch (s.getInt("responseCode")) {
                             default:

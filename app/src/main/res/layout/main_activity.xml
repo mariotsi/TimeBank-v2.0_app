@@ -10,6 +10,27 @@
               android:orientation="vertical">
 
 
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/description_search_editText" android:layout_gravity="center_horizontal"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+        <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_category_spinner" android:layout_weight="1"/>
+        <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_province_spinner" android:layout_weight="1"/>
+        <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_city_spinner" android:layout_weight="1"/>
+    </LinearLayout>
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
