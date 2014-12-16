@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 
 public class JsonUtils {
 
-    private static final String TAG = "JSON Utils";
+    private static final String TAG = "JsonUtils";
 
     public static JSONObject urlResponseToJson(InputStreamReader mInputStreamReader, int responseCode, String responseMessage) {
         String line;

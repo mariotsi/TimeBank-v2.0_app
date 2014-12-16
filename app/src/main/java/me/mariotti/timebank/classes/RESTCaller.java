@@ -2,6 +2,7 @@ package me.mariotti.timebank.classes;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 import me.mariotti.timebank.MainActivity;
 import org.json.JSONObject;
 
@@ -48,12 +49,13 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
     @Override
     protected JSONObject doInBackground(String... params) {
+        Log.i(TAG,"Command n°: "+command);
         JSONObject mJSONObject;
         HttpURLConnection urlConnection = null;
         int responseCode = 1000;
         String responseMessage = "Unhandled error";
         InputStreamReader in = null;
-        OutputStream out = null;
+        OutputStream out;
         try {
 
             //Default behaviour is doInput, dont doOutput and use GET method
@@ -88,7 +90,6 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             if (doInput) {
                 in = new InputStreamReader(urlConnection.getInputStream(), "UTF-8");
             }
-
             responseCode = urlConnection.getResponseCode();
             responseMessage = urlConnection.getResponseMessage();
         } catch (Exception e) {

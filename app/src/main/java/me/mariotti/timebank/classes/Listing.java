@@ -25,7 +25,7 @@ public class Listing implements Parcelable {
     public int applicant;
     public String applicantName;
     public boolean requested;
-    // TODO add owner class and an owner field
+    // TODO add applicant name on server
 
 
     public Listing(JSONObject json) {
@@ -36,7 +36,7 @@ public class Listing implements Parcelable {
             categoryName = json.getString("category_name");
             dateCreation = dateParser.parse(json.getString("creation_date"));
             owner = json.getInt("owner");
-            applicant = json.getInt("applicant");
+            applicant = json.optInt("applicant",-1);
             applicantName = json.optString("applicant_name", null);
             requested = json.getBoolean("requested");
         } catch (JSONException e) {

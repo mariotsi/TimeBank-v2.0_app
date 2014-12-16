@@ -67,7 +67,7 @@ public class CategoryWorker extends RESTCaller {
                 } finally {
                     if (responseCode != 200)
                         Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
-                    ((NewEditActivity) mActivity).progress.hide();
+                    ((NewEditActivity) mActivity).progress.dismiss();
                     ((NewEditActivity) mActivity).updateUI();
                 }
                 break;

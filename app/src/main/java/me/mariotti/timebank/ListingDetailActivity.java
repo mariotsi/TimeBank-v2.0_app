@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import me.mariotti.timebank.profile.ProfileActivity;
 
 public class ListingDetailActivity extends FragmentActivity implements ConfirmDeleteListingDialog.NoticeDialogListener{
     public static final String LISTING_OBJECT = "me.mariotti.timebank.listing_object";
+    private static final String TAG = "ListingDetailActivity";
     private Button mRequestButton;
     private Menu mOptionsMenu;
     private Listing mListing;
@@ -82,6 +84,7 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
      * and requested state
      */
     public void updateUI() {
+        Log.i(TAG,"UpdateUI requested");
         ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
         ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName);
         ((TextView) findViewById(R.id.dateText)).setText(Listing.dateFormatter.format(mListing.dateCreation));
@@ -175,6 +178,7 @@ public class ListingDetailActivity extends FragmentActivity implements ConfirmDe
     public static void markListingsAsOutdated() {
         areListingsOutdated = true;
     }
+
     public void showConfirmDelete() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new ConfirmDeleteListingDialog();
