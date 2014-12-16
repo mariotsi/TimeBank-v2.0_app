@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 import me.mariotti.timebank.RESTWorkers.ListingWorker;
 import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.RESTCaller;
@@ -23,7 +25,7 @@ public class ListingDetailActivity extends Activity {
     private CheckBox mCheckBox;
     private TextView mRequestedLabel;
     public ProgressDialog progress;
-    private static boolean areListingsOutdated =false;
+    private static boolean areListingsOutdated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +60,9 @@ public class ListingDetailActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (areListingsOutdated){
+        if (areListingsOutdated) {
             new ListingWorker(this, RESTCaller.GET_SINGLE_LISTING, String.valueOf(getListingId())).execute();
-            areListingsOutdated=false;
+            areListingsOutdated = false;
         }
         updateUI();
     }
@@ -73,6 +75,10 @@ public class ListingDetailActivity extends Activity {
         return mListing.id;
     }
 
+    /**
+     * Update all the information inside TextView, hide/show Menu Item and UI Views based on Ownership, Applicant name,
+     * and requested state
+     */
     public void updateUI() {
         ((TextView) findViewById(R.id.descriptionText)).setText(mListing.description);
         ((TextView) findViewById(R.id.categoryText)).setText(mListing.categoryName);
@@ -91,7 +97,7 @@ public class ListingDetailActivity extends Activity {
             }
             logInOut.setIntent(intent);
         }
-        mRequestButton.setVisibility(!mListing.imOwner() && User.isLogged && (mListing.imTheApplicant() || !mListing.requested ) ? View.VISIBLE : View.INVISIBLE);
+        mRequestButton.setVisibility(!mListing.imOwner() && User.isLogged && (mListing.imTheApplicant() || !mListing.requested) ? View.VISIBLE : View.INVISIBLE);
         if (mListing.imOwner()) {
             mCheckBox.setVisibility(View.VISIBLE);
             mCheckBox.setChecked(mListing.requested);
@@ -105,7 +111,6 @@ public class ListingDetailActivity extends Activity {
                 mRequestButton.setText(getString(R.string.request_text));
             }
         }
-
     }
 
     @Override
@@ -116,12 +121,12 @@ public class ListingDetailActivity extends Activity {
         } else {
             profile.setVisible(false);
         }
-        if (!mListing.imOwner()) {
-            mOptionsMenu.findItem(R.id.menu__listing_detail__edit).setVisible(false);
-            mOptionsMenu.findItem(R.id.menu__listing_detail__delete).setVisible(false);
-        } else {
+        if (mListing.imOwner()) {
             mOptionsMenu.findItem(R.id.menu__listing_detail__edit).setVisible(true);
             mOptionsMenu.findItem(R.id.menu__listing_detail__delete).setVisible(true);
+        } else {
+            mOptionsMenu.findItem(R.id.menu__listing_detail__edit).setVisible(false);
+            mOptionsMenu.findItem(R.id.menu__listing_detail__delete).setVisible(false);
         }
         return true;
     }
@@ -141,7 +146,7 @@ public class ListingDetailActivity extends Activity {
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);
-        mOptionsMenu.findItem(R.id.menu__listing_detail__profile).setIntent(new Intent(this,ProfileActivity.class));
+        mOptionsMenu.findItem(R.id.menu__listing_detail__profile).setIntent(new Intent(this, ProfileActivity.class));
         return true;
     }
 
@@ -165,7 +170,8 @@ public class ListingDetailActivity extends Activity {
 
     public void deleteListing(MenuItem item) {
     }
-    public static void markListingsAsOutdated(){
-        areListingsOutdated=true;
+
+    public static void markListingsAsOutdated() {
+        areListingsOutdated = true;
     }
 }

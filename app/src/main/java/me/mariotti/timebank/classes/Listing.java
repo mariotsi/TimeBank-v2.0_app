@@ -13,16 +13,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Listing implements Parcelable{
+public class Listing implements Parcelable {
     public static final DateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
     public static final DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
     public int id;
     public String description;
     public int categoryId;
-    public String categoryName=null;
+    public String categoryName = null;
     public Date dateCreation;
     public int owner;
     public int applicant;
+    public String applicantName;
     public boolean requested;
     // TODO add owner class and an owner field
 
@@ -34,8 +35,9 @@ public class Listing implements Parcelable{
             categoryId = json.getInt("category");
             categoryName = json.getString("category_name");
             dateCreation = dateParser.parse(json.getString("creation_date"));
-            owner=json.getInt("owner");
+            owner = json.getInt("owner");
             applicant = json.getInt("applicant");
+            applicantName = json.optString("applicant_name", null);
             requested = json.getBoolean("requested");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -52,7 +54,7 @@ public class Listing implements Parcelable{
                applicant + "\t-\t" + "Requested: " + requested;
     }
 
-    //Parcelling
+    //Construct a Listing from a Parcel
     public Listing(Parcel in) {
         try {
             Bundle mBundle = in.readBundle();
@@ -64,31 +66,33 @@ public class Listing implements Parcelable{
             owner = mBundle.getInt("owner");
             applicant = mBundle.getInt("applicant");
             requested = mBundle.getBoolean("requested");
-        }
-         catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
     }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
+    //Save the Listing into a Parcel
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         Bundle mBundle = new Bundle();
         mBundle.putInt("id", id);
-        mBundle.putString("description",description);
+        mBundle.putString("description", description);
         mBundle.putInt("categoryId", categoryId);
         mBundle.putString("categoryName", categoryName);
         mBundle.putString("dateCreation", dateParser.format(dateCreation));
         mBundle.putInt("owner", owner);
         mBundle.putInt("applicant", applicant);
-        mBundle.putBoolean("requested",requested);
+        mBundle.putBoolean("requested", requested);
         parcel.writeBundle(mBundle);
 
     }
+
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Listing createFromParcel(Parcel in) {
             return new Listing(in);
@@ -99,11 +103,11 @@ public class Listing implements Parcelable{
         }
     };
 
-    public boolean imOwner(){
+    public boolean imOwner() {
         return MainActivity.loggedUser != null && MainActivity.loggedUser.id == owner;
     }
 
-    public boolean imTheApplicant(){
+    public boolean imTheApplicant() {
         return MainActivity.loggedUser != null && MainActivity.loggedUser.id == applicant;
     }
 }

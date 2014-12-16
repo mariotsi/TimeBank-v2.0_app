@@ -15,9 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class CategoryWorker extends RESTCaller {
-    public CategoryWorker(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
-        super(mActivity, command, outDataMap, params);
-    }
+
     public CategoryWorker(Activity mActivity, int command, String... params) {
         super(mActivity, command, null, params);
     }
@@ -40,6 +38,7 @@ public class CategoryWorker extends RESTCaller {
                 int responseCode = 0;
                 try {
                     if (!s.getBoolean("hasErrors") && (responseCode = s.getInt("responseCode")) == 200) {
+                        //Initialize reference to Activity fields
                         ArrayAdapter categorySpinnerAdapter = ((NewEditActivity) this.mActivity).categorySpinnerAdapter;
                         HashMap<String, Integer> categoryMap = ((NewEditActivity) this.mActivity).categoryMap;
                         ArrayList<String> categoryList = ((NewEditActivity) this.mActivity).categoryList;
@@ -50,6 +49,7 @@ public class CategoryWorker extends RESTCaller {
                         for (int i = 0; i < body.length(); i++) {
                             tempId = body.getJSONObject(i).getInt("category_id");
                             tempName = body.getJSONObject(i).getString("name");
+                            //this is used to retrieve category id based on the name selected on the spinner
                             categoryMap.put(tempName, tempId);
                             categoryList.add(tempName);
                         }

@@ -1,20 +1,15 @@
 package me.mariotti.timebank.profile;
 
-import java.util.ArrayList;
-import java.util.Locale;
-
-import android.app.*;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import me.mariotti.timebank.LoginActivity;
 import me.mariotti.timebank.NewEditActivity;
 import me.mariotti.timebank.R;
@@ -23,6 +18,9 @@ import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
 import me.mariotti.timebank.classes.User;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class ProfileActivity extends Activity {
@@ -65,6 +63,9 @@ public class ProfileActivity extends Activity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        /*
+        All data is contained in this activity, the two fragmments only show it, and handle the click event
+         */
         mListingsArray = new ArrayList<>();
         mMyListingsArray = new ArrayList<>();
         mRequestedListingsArray = new ArrayList<>();
@@ -114,14 +115,17 @@ public class ProfileActivity extends Activity {
             refreshListings();
         }
         if (id == R.id.menu__profile_activity__new) {
-            Intent intent= new Intent(this,NewEditActivity.class);
-            intent.putExtra(NewEditActivity.ACTION,NewEditActivity.NEW);
+            Intent intent = new Intent(this, NewEditActivity.class);
+            intent.putExtra(NewEditActivity.ACTION, NewEditActivity.NEW);
             startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Download the User profile and, indirecly through the UserWorker update the fragment's listView
+     */
     public void refreshListings() {
         new UserWorker(this, RESTCaller.GET_MY_PROFILE).execute();
     }
@@ -174,7 +178,6 @@ public class ProfileActivity extends Activity {
             return null;
         }
     }
-
 
 
 }

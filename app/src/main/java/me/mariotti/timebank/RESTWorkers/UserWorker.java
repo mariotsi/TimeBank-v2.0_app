@@ -19,6 +19,7 @@ public class UserWorker extends RESTCaller {
     public UserWorker(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
         super(mActivity, command, outDataMap, params);
     }
+
     public UserWorker(Activity mActivity, int command, String... params) {
         super(mActivity, command, null, params);
     }

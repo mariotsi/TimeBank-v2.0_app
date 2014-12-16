@@ -1,20 +1,16 @@
 package me.mariotti.timebank.profile;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.ListView;
 import me.mariotti.timebank.ListingDetailActivity;
 import me.mariotti.timebank.R;
-import me.mariotti.timebank.classes.Listing;
 import me.mariotti.timebank.classes.ListingAdapter;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,9 +69,9 @@ public class MyListings extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getView()!=null) {
+        if (getView() != null) {
             mListView = (ListView) getView().findViewById(R.id.my_listings_list_view);
-            mMyListingAdapter = ((ProfileActivity)getActivity()).mMyListingsAdapter;
+            mMyListingAdapter = ((ProfileActivity) getActivity()).mMyListingsAdapter;
             mListView.setAdapter(mMyListingAdapter);
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

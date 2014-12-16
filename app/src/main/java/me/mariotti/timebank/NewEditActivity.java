@@ -41,13 +41,16 @@ public class NewEditActivity extends Activity {
         progress.setIndeterminate(true);
         setContentView(R.layout.activity_new_edit);
         action = getIntent().getExtras().getInt(ACTION);
-        categoryMap = new HashMap<>();
+        categoryMap = new HashMap<>();//maintain link between name and id
         categoryList = new ArrayList<>();
         categorySpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //Initialize references to UI views
         categorySpinner = (Spinner) findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(categorySpinnerAdapter);
         descriptionText = (EditText) findViewById(R.id.description_editText);
+
         new CategoryWorker(this, RESTCaller.GET_CATEGORIES, null).execute();
         if (action == NEW) {
             setTitle("Create listing");
@@ -55,7 +58,6 @@ public class NewEditActivity extends Activity {
             setTitle("Edit listing");
             Bundle data = getIntent().getExtras();
             mListing = data.getParcelable(LISTING_OBJECT);
-
         }
     }
 
@@ -83,13 +85,12 @@ public class NewEditActivity extends Activity {
             }
         }
         return true;
-
     }
 
     private void editListing() {
         if (descriptionText.getText().toString().length() > 0) {
             String categoryName = categorySpinner.getSelectedItem().toString();
-            HashMap<String, Object> tempMap = new HashMap<>(1);
+            HashMap<String, Object> tempMap = new HashMap<>(2);
             Integer categoryId = categoryMap.get(categoryName);
             tempMap.put("category", categoryId);
             tempMap.put("description", descriptionText.getText().toString());
@@ -106,10 +107,13 @@ public class NewEditActivity extends Activity {
             tempMap.put("description", descriptionText.getText().toString());
             new ListingWorker(this, RESTCaller.CREATE_LISTING, tempMap).execute();
         }
-
     }
 
+    /**
+     * Updated description and category based on current mListing instance in ListingDetailActivity
+     */
     public void updateUI() {
+        //This is called only when categories are downloaded and work only on EDIT cause of mListing!=null
         if (mListing != null) {
             categorySpinner.setSelection(categoryList.indexOf(mListing.categoryName));
             descriptionText.setText(mListing.description);

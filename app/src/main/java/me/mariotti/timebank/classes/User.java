@@ -29,7 +29,7 @@ public class User {
         this.used_hours = used_hours;
         this.address = address;
         this.city = city;
-        this.city_name=city_name;
-        this.userCredentials=userCredentials;
+        this.city_name = city_name;
+        this.userCredentials = userCredentials;
     }
 }

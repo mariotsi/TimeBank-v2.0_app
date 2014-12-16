@@ -10,12 +10,10 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
@@ -62,7 +60,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         setContentView(R.layout.activity_login);
         action = getIntent().getExtras().getInt(ACTION);
         //If the user is logging out don't create the Activity, just make the call to the API and kill the activity
-        if (action==LOGOUT){
+        if (action == LOGOUT) {
             mAuthTask = new UserLoginTask();
             mAuthTask.execute(action);
             try {
@@ -163,7 +161,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isUsernameValid(String username) {
-        return username.length() >= 5 && username.length()<=40;
+        return username.length() >= 5 && username.length() <= 40;
     }
 
     private boolean isPasswordValid(String password) {
@@ -267,14 +265,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     public class UserLoginTask extends AsyncTask<Integer, Void, JSONObject> {
 
         private static final String TAG = "Login";
-        private String mUsername="";
-        private String mPassword="";
+        private String mUsername = "";
+        private String mPassword = "";
         private String userCredentials;
 
         UserLoginTask(String email, String password) {
             mUsername = email;
             mPassword = password;
         }
+
         UserLoginTask() {
         }
 
@@ -328,7 +327,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         @Override
         protected void onPostExecute(final JSONObject success) {
             mAuthTask = null;
-            if (mProgressView!=null) {
+            if (mProgressView != null) {
                 showProgress(false);
             }
             try {

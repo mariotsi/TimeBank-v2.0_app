@@ -41,6 +41,7 @@ public class JsonUtils {
                 response.put("hasErrors", false);
                 response.put("responseCode", responseCode);
                 response.put("responseMessage", responseMessage);
+                //Checks if in the body there is an array or an object
                 if (serverResponseMessage.startsWith("[") && serverResponseMessage.endsWith("]")) {
                     response.put("responseBody", new JSONArray(serverResponseMessage));
                 } else {

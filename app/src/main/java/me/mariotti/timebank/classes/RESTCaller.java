@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import me.mariotti.timebank.MainActivity;
 import org.json.JSONObject;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -32,7 +31,6 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     private final HashMap<String, Object> outDataMap;
     protected String mResourceUrl;
     final String TAG = "RESTCaller";
-    protected ListingAdapter mListingAdapter;
     protected Activity mActivity;
     protected int command;
     protected String[] params;
@@ -44,13 +42,13 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
     public RESTCaller(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
         this.mActivity = mActivity;
         this.command = command;
-        this.outDataMap=outDataMap;
+        this.outDataMap = outDataMap;
         this.params = params;
     }
 
     @Override
     protected JSONObject doInBackground(String... params) {
-        JSONObject mJSONObject = new JSONObject();
+        JSONObject mJSONObject;
         HttpURLConnection urlConnection = null;
         int responseCode = 1000;
         String responseMessage = "Unhandled error";
@@ -60,10 +58,10 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
 
             //Default behaviour is doInput, dont doOutput and use GET method
             URL url = new URL(mServerUrl + mResourceUrl);
-            byte[] postDataBytes=null;
-            if (doOutput){
+            byte[] postDataBytes = null;
+            if (doOutput) {
                 StringBuilder postData = new StringBuilder();
-                for (Map.Entry<String,Object> param : outDataMap.entrySet()) {
+                for (Map.Entry<String, Object> param : outDataMap.entrySet()) {
                     if (postData.length() != 0) postData.append('&');
                     postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
                     postData.append('=');
@@ -74,7 +72,7 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             }
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(HttpMethod);
-            if (doOutput){
+            if (doOutput) {
                 urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 urlConnection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
             }
@@ -94,9 +92,12 @@ public class RESTCaller extends AsyncTask<String, Integer, JSONObject> {
             responseCode = urlConnection.getResponseCode();
             responseMessage = urlConnection.getResponseMessage();
         } catch (Exception e) {
-            /*An error 4xx throw an exception. Here catch the error number after the exception is fired. If
+            /*
+            An error 4xx throw an exception. Here catch the error number after the exception is fired. If
             urlConnection is not null but accessing it throws an IOException uses the default error code and get the
-             exception toString() as error message. If urlConnection is null uses the default error code and message. */
+            exception toString() as error message. If urlConnection is null uses the error code and message given
+            from urlConnection
+            */
             try {
                 responseCode = urlConnection != null ? urlConnection.getResponseCode() : responseCode;
                 responseMessage = urlConnection != null ? urlConnection.getResponseMessage() : responseMessage;

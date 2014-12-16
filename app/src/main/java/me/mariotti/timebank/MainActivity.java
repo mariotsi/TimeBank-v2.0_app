@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
     public ProgressDialog progress;
     public static User loggedUser = null;
     private Menu mOptionsMenu;
-    private static boolean areListingsOutdated =true;
+    private static boolean areListingsOutdated = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
             intent.putExtra(LoginActivity.ACTION, LoginActivity.LOGIN);
         }
         LogInOut.setIntent(intent);
-        mOptionsMenu.findItem(R.id.menu__main_activity__profile).setIntent(new Intent(this,ProfileActivity.class));
+        mOptionsMenu.findItem(R.id.menu__main_activity__profile).setIntent(new Intent(this, ProfileActivity.class));
         return true;
     }
 
@@ -105,8 +105,8 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu__main_activity__new) {
-            Intent intent= new Intent(this,NewEditActivity.class);
-            intent.putExtra(NewEditActivity.ACTION,NewEditActivity.NEW);
+            Intent intent = new Intent(this, NewEditActivity.class);
+            intent.putExtra(NewEditActivity.ACTION, NewEditActivity.NEW);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -136,14 +136,14 @@ public class MainActivity extends Activity {
     }
 
     public void refreshListings() {
-        new ListingWorker(this,RESTCaller.GET_LISTING_LIST).execute();
+        new ListingWorker(this, RESTCaller.GET_LISTING_LIST).execute();
     }
 
     public void refresh(MenuItem item) {
         refreshListings();
     }
 
-    public static void markListingsAsOutdated(){
-        areListingsOutdated=true;
+    public static void markListingsAsOutdated() {
+        areListingsOutdated = true;
     }
 }

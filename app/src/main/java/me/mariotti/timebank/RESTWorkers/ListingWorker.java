@@ -7,6 +7,7 @@ import me.mariotti.timebank.ListingDetailActivity;
 import me.mariotti.timebank.MainActivity;
 import me.mariotti.timebank.NewEditActivity;
 import me.mariotti.timebank.classes.Listing;
+import me.mariotti.timebank.classes.ListingAdapter;
 import me.mariotti.timebank.classes.RESTCaller;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,13 +18,28 @@ import java.util.HashMap;
 
 
 public class ListingWorker extends RESTCaller {
+    protected ListingAdapter mListingAdapter;
 
-
-
+    /**
+     * Used to instantiate a ListingWorker that will be used to output data to the webservice
+     *
+     * @param mActivity  the Activity that create the worker, usually this
+     * @param command    action to do, see RESTCaller constants
+     * @param outDataMap map containing data to output in format
+     * @param params     additional String parameters
+     */
     public ListingWorker(Activity mActivity, int command, HashMap<String, Object> outDataMap, String... params) {
         super(mActivity, command, outDataMap, params);
     }
-    public ListingWorker(Activity mActivity, int command,  String... params) {
+
+    /**
+     * Used to instantiate a ListingWorker that will not be used to output data to the webservice
+     *
+     * @param mActivity the Activity that create the worker, usually this
+     * @param command   action to do, see RESTCaller constants
+     * @param params    additional String parameters
+     */
+    public ListingWorker(Activity mActivity, int command, String... params) {
         super(mActivity, command, null, params);
     }
 
@@ -51,18 +67,18 @@ public class ListingWorker extends RESTCaller {
                 ((ListingDetailActivity) mActivity).progress.show();
                 break;
             case CREATE_LISTING:
-                HttpMethod="POST";
-                doOutput=true;
-                doInput=false;//Ignore the returned new listing
+                HttpMethod = "POST";
+                doOutput = true;
+                doInput = false;//Ignore the returned new listing
                 mResourceUrl = "listings/";
                 ((NewEditActivity) mActivity).progress.setMessage("Creating listing");
                 ((NewEditActivity) mActivity).progress.show();
                 break;
             case EDIT_LISTING:
-                HttpMethod="PUT";
-                doOutput=true;
-                doInput=true;
-                mResourceUrl = "listings/"+params[0]+"/";
+                HttpMethod = "PUT";
+                doOutput = true;
+                doInput = true;
+                mResourceUrl = "listings/" + params[0] + "/";
                 ((NewEditActivity) mActivity).progress.setMessage("Editing listing");
                 ((NewEditActivity) mActivity).progress.show();
                 break;
@@ -128,8 +144,8 @@ public class ListingWorker extends RESTCaller {
                 try {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 410) {
                         message = "Listing successfully unrequested";
-                                              JSONObject body = s.getJSONObject("responseBody");
-                        ((NewEditActivity) mActivity).mListing=new Listing(body);
+                        JSONObject body = s.getJSONObject("responseBody");
+                        ((NewEditActivity) mActivity).mListing = new Listing(body);
                         ((NewEditActivity) mActivity).updateUI();
                         MainActivity.markListingsAsOutdated();
                     } else {
@@ -153,9 +169,9 @@ public class ListingWorker extends RESTCaller {
                 }
                 break;
             case GET_SINGLE_LISTING:
-                int responseCode=0;
+                int responseCode = 0;
                 try {
-                    if (!s.getBoolean("hasErrors") && (responseCode=s.getInt("responseCode")) == 200) {
+                    if (!s.getBoolean("hasErrors") && (responseCode = s.getInt("responseCode")) == 200) {
                         ((ListingDetailActivity) mActivity).setListing(new Listing(s.getJSONObject("responseBody")));
                     } else {
                         switch (s.getInt("responseCode")) {
@@ -173,8 +189,8 @@ public class ListingWorker extends RESTCaller {
                     ((ListingDetailActivity) mActivity).updateUI();
                     MainActivity.markListingsAsOutdated();
                     ((ListingDetailActivity) mActivity).progress.hide();
-                    if (responseCode!=200)
-                    Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
+                    if (responseCode != 200)
+                        Toast.makeText(mActivity.getBaseContext(), message, Toast.LENGTH_LONG).show();
                 }
                 break;
             case CREATE_LISTING:
@@ -205,6 +221,8 @@ public class ListingWorker extends RESTCaller {
                     if (!s.getBoolean("hasErrors") && s.getInt("responseCode") == 200) {//TODO change to 201 on server
                         message = "Listing successfully edited";
                         MainActivity.markListingsAsOutdated();
+                        //Force ListingDetailActivity to fetch updated version of listing just after I call finish()
+                        //in the finally block. Note: i can open the edit Activity only from ListingDetailActivity
                         ListingDetailActivity.markListingsAsOutdated();
                     } else {
                         switch (s.getInt("responseCode")) {
@@ -230,7 +248,6 @@ public class ListingWorker extends RESTCaller {
                     mActivity.finish();
                 }
                 break;
-
         }
     }
 }

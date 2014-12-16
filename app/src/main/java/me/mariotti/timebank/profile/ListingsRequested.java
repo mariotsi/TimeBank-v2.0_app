@@ -1,14 +1,11 @@
 package me.mariotti.timebank.profile;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.ListView;
 import me.mariotti.timebank.ListingDetailActivity;
@@ -18,7 +15,7 @@ import me.mariotti.timebank.classes.ListingAdapter;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- *  interface
+ * interface
  * to handle interaction events.
  * Use the {@link ListingsRequested#newInstance} factory method to
  * create an instance of this fragment.
@@ -68,13 +65,12 @@ public class ListingsRequested extends Fragment {
     }
 
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getView()!=null) {
+        if (getView() != null) {
             mListView = (ListView) getView().findViewById(R.id.requested_listings_list_view);
-            mRequestedListingAdapter = ((ProfileActivity)getActivity()).mRequestedListingsAdapter;
+            mRequestedListingAdapter = ((ProfileActivity) getActivity()).mRequestedListingsAdapter;
             mListView.setAdapter(mRequestedListingAdapter);
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
