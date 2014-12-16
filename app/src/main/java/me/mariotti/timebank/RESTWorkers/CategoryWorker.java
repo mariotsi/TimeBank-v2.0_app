@@ -14,7 +14,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class CategoryWorker extends RESTCaller {
 
@@ -45,18 +44,13 @@ public class CategoryWorker extends RESTCaller {
                     if (!s.getBoolean("hasErrors") && (responseCode = s.getInt("responseCode")) == 200) {
                         //Initialize reference to Activity fields
                         ArrayAdapter categorySpinnerAdapter = ((NewEditActivity) this.mActivity).categorySpinnerAdapter;
-                        HashMap<String, Integer> categoryMap = ((NewEditActivity) this.mActivity).categoryMap;
-                        ArrayList<String> categoryList = ((NewEditActivity) this.mActivity).categoryList;
+                        ArrayList<Category> categoryList = ((NewEditActivity) this.mActivity).categoryList;
                         JSONArray body = s.getJSONArray("responseBody");
                         categoryList.clear();
-                        String tempName;
-                        int tempId;
+                        Category tempCategory;
                         for (int i = 0; i < body.length(); i++) {
-                            tempId = body.getJSONObject(i).getInt("category_id");
-                            tempName = body.getJSONObject(i).getString("name");
-                            //this is used to retrieve category id based on the name selected on the spinner
-                            categoryMap.put(tempName, tempId);
-                            categoryList.add(tempName);
+                           tempCategory=new Category(body.getJSONObject(i));
+                            categoryList.add(tempCategory);
                         }
                         Collections.sort(categoryList);
                         categorySpinnerAdapter.notifyDataSetChanged();
@@ -87,10 +81,8 @@ public class CategoryWorker extends RESTCaller {
                         JSONArray body = s.getJSONArray("responseBody");
                         categoryList.clear();
                         Category tempCategory;
-                        int tempId;
                         for (int i = 0; i < body.length(); i++) {
                             tempCategory=new Category(body.getJSONObject(i));
-
                             categoryList.add(tempCategory);
                         }
                         Collections.sort(categoryList);
